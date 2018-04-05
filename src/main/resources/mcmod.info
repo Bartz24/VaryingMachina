@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "varyingmachina",
+  "name": "Varying Machina",
+  "description": "Large collection of machines that can be made with many types!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Bartz24"],
+  "credits": "",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

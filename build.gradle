@@ -25,6 +25,16 @@ repositories {
 		name = "Progwml6 maven"
 		url = "http://dvs1.progwml6.com/files/maven"
 	}
+	maven { 
+		// TOP
+		name 'tterrag maven'
+		url "http://maven.tterrag.com/"
+	}
+	maven {
+		//CoFH
+		name 'CoFH'
+		url "http://maven.covers1624.net"
+	}
 }
 
 version = "0.1.0"
@@ -40,10 +50,11 @@ minecraft {
     version = "1.12.2-14.23.2.2641"
     runDir = "run"
     
-    mappings = "snapshot_20171217"
+    mappings = "snapshot_20171003"
 }
 
 dependencies {
+	compile files("lib/theoneprobe-1.12-1.4.21.jar")
 	compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.7.273"
 	
 	deobfProvided "mezz.jei:jei_1.12.2:4.8.5.159:api"

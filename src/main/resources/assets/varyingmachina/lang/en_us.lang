@@ -1,0 +1,49 @@
+varyingmachina.dirt=Dirt
+varyingmachina.wood=Wooden
+varyingmachina.stone=Stone
+varyingmachina.brick=Brick
+varyingmachina.netherbrick=Nether Brick
+varyingmachina.endstone=End Stone
+varyingmachina.iron=Iron
+varyingmachina.bronze=Bronze
+varyingmachina.steel=Steel
+varyingmachina.lead=Lead
+varyingmachina.constantan=Constantan
+varyingmachina.invar=Invar
+varyingmachina.electrum=Electrum
+varyingmachina.signalum=Signalum
+varyingmachina.enderium=Enderium
+varyingmachina.osmium=Osmium
+varyingmachina.refinedobsidian=Refined Obsidian
+varyingmachina.manasteel=Manasteel
+varyingmachina.terrasteel=Terrasteel
+varyingmachina.elementium=Elementium
+varyingmachina.cobalt=Cobalt
+varyingmachina.ardite=Ardite
+varyingmachina.manyullyn=Manyullyn
+varyingmachina.electricalsteel=Electrical Steel
+varyingmachina.energeticalloy=Energetic Alloy
+varyingmachina.vibrantalloy=Vibrant Alloy
+varyingmachina.soularium=Soularium
+varyingmachina.darksteel=Dark Steel
+varyingmachina.darkmatter=Dark Matter
+varyingmachina.lightmatter=Light Matter
+
+item.varyingmachina.darkmatter.name=Dark Matter
+item.varyingmachina.lightmatter.name=Light Matter
+
+tile.varyingmachina.casing.name=%s Casing
+
+item.varyingmachina.smelter.name=%s Smelter
+item.varyingmachina.grinder.name=%s Grinder
+item.varyingmachina.presser.name=%s Presser
+
+item.varyingmachina.regulator.name=%s Regulator
+item.varyingmachina.inserter.name=%s Inserter
+item.varyingmachina.remover.name=%s Remover
+item.varyingmachina.bellow.name=%s Bellow
+item.varyingmachina.gearbox.name=%s Gearbox
+
+jei.varyingmachina.recipe.smelter=Smelter
+jei.varyingmachina.recipe.grinder=Grinder
+jei.varyingmachina.recipe.presser=Presser
