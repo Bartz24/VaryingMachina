@@ -2,6 +2,7 @@ package com.bartz24.varyingmachina.base.inventory;
 
 import java.io.IOException;
 
+import com.bartz24.varyingmachina.References;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
 import com.bartz24.varyingmachina.network.OpenGUIMessage;
@@ -12,6 +13,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiCasing extends GuiBase {
 
@@ -35,7 +37,8 @@ public class GuiCasing extends GuiBase {
 			guiComponents.clear();
 			tile.getMachine().initGui(this, buttonList, tile);
 		}
-		moduleButton = addButton(new GuiModuleButton(0, this.guiLeft + 150, this.guiTop + 40, itemRender));
+		moduleButton = addButton(new GuiGoodButton(0, this.guiLeft + 154, this.guiTop + 40, 12, 12, "",
+				new ResourceLocation(References.ModID, "textures/gui/guiicons.png"), 59, 78));
 	}
 
 	protected void updateComponents() {

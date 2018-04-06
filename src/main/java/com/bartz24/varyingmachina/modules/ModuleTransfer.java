@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
+import com.bartz24.varyingmachina.References;
+import com.bartz24.varyingmachina.base.inventory.GuiGoodButton;
 import com.bartz24.varyingmachina.base.inventory.GuiModules;
 import com.bartz24.varyingmachina.base.inventory.ItemHandlerNamed;
 import com.bartz24.varyingmachina.base.item.ItemModule;
@@ -14,10 +16,10 @@ import com.bartz24.varyingmachina.network.ModuleDataMessage;
 import com.bartz24.varyingmachina.network.VaryingMachinaPacketHandler;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -109,8 +111,10 @@ public class ModuleTransfer extends ItemModule {
 
 	@SideOnly(Side.CLIENT)
 	public void initGui(GuiModules gui, List buttonList, TileCasing casing) {
-		buttonList.add(new GuiButton(10, gui.getGuiLeft() + 40, gui.getGuiTop() + 48, 8, 8, "<"));
-		buttonList.add(new GuiButton(11, gui.getGuiLeft() + 70, gui.getGuiTop() + 48, 8, 8, ">"));
+		buttonList.add(new GuiGoodButton(10, gui.getGuiLeft() + 40, gui.getGuiTop() + 48, 8, 8, "",
+				new ResourceLocation(References.ModID, "textures/gui/guiicons.png"), 72, 87));
+		buttonList.add(new GuiGoodButton(11, gui.getGuiLeft() + 70, gui.getGuiTop() + 48, 8, 8, "",
+				new ResourceLocation(References.ModID, "textures/gui/guiicons.png"), 72, 79));
 	}
 
 	@SideOnly(Side.CLIENT)

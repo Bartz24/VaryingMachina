@@ -38,7 +38,8 @@ public class GuiModules extends GuiBase {
 
 	public void initGui() {
 		super.initGui();
-		moduleButton = addButton(new GuiModuleButton(0, this.guiLeft + 150, this.guiTop + 40, itemRender));
+		moduleButton = addButton(new GuiGoodButton(0, this.guiLeft + 154, this.guiTop + 40, 12, 12, "",
+				new ResourceLocation(References.ModID, "textures/gui/guiicons.png"), 59, 78));
 		leftButton = addButton(new GuiButton(1, guiLeft + 40, guiTop + 19, 20, 20, "<"));
 		rightButton = addButton(new GuiButton(2, guiLeft + 116, guiTop + 19, 20, 20, ">"));
 		if (selectedModule >= 0 && !tile.modules.getStackInSlot(selectedModule).isEmpty()) {
