@@ -12,7 +12,6 @@ import com.bartz24.varyingmachina.base.tile.TileCasing;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -23,8 +22,8 @@ public class ModGuiHandler implements IGuiHandler {
 
 	private static Map<Integer, GuiMapping> mapGUIIDs() {
 		Map<Integer, GuiMapping> map = new HashMap();
-		map.put(0, new GuiMapping(GuiCasing.class, ContainerCasing.class, TileCasing.class));
-		map.put(1, new GuiMapping(GuiModules.class, ContainerModules.class, TileCasing.class));
+		addGUIMapping(map, new GuiMapping(GuiCasing.class, ContainerCasing.class, TileCasing.class)); // 0
+		addGUIMapping(map, new GuiMapping(GuiModules.class, ContainerModules.class, TileCasing.class, 7)); //1-7
 		return map;
 	}
 
@@ -34,6 +33,12 @@ public class ModGuiHandler implements IGuiHandler {
 				return i;
 		}
 		return -1;
+	}
+
+	private static void addGUIMapping(Map<Integer, GuiMapping> map, GuiMapping mapping) {
+		mapping.startingIndex = map.size();
+		for (int i = 0; i < mapping.mappingSize; i++)
+			map.put(map.size(), mapping);
 	}
 
 	@Override
@@ -47,23 +52,49 @@ public class ModGuiHandler implements IGuiHandler {
 	}
 
 	private static ContainerBase createContainer(int id, EntityPlayer player, World world, BlockPos pos) {
-		try {
-			return guiMappings.get(id).container
-					.getDeclaredConstructor(EntityPlayer.class, guiMappings.get(id).tileEntity)
-					.newInstance(player, guiMappings.get(id).tileEntity.cast(world.getTileEntity(pos)));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+
+		GuiMapping mapping = guiMappings.get(id);
+
+		if (mapping.mappingSize > 1) {
+			try {
+				return mapping.container.getDeclaredConstructor(EntityPlayer.class, mapping.tileEntity, int.class)
+						.newInstance(player, mapping.tileEntity.cast(world.getTileEntity(pos)),
+								id - mapping.startingIndex);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			try {
+				return mapping.container.getDeclaredConstructor(EntityPlayer.class, mapping.tileEntity)
+						.newInstance(player, mapping.tileEntity.cast(world.getTileEntity(pos)));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
 	}
 
 	private static GuiContainer createGui(int id, EntityPlayer player, World world, BlockPos pos) {
-		try {
-			return guiMappings.get(id).gui.getDeclaredConstructor(EntityPlayer.class, guiMappings.get(id).tileEntity)
-					.newInstance(player, guiMappings.get(id).tileEntity.cast(world.getTileEntity(pos)));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		GuiMapping mapping = guiMappings.get(id);
+
+		if (mapping.mappingSize > 1) {
+			try {
+				return mapping.gui.getDeclaredConstructor(EntityPlayer.class, mapping.tileEntity, int.class)
+						.newInstance(player, mapping.tileEntity.cast(world.getTileEntity(pos)),
+								id - mapping.startingIndex);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			try {
+				return mapping.gui.getDeclaredConstructor(EntityPlayer.class, mapping.tileEntity).newInstance(player,
+						mapping.tileEntity.cast(world.getTileEntity(pos)));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
 	}
 
@@ -71,12 +102,23 @@ public class ModGuiHandler implements IGuiHandler {
 		public Class<? extends TileEntity> tileEntity;
 		public Class<? extends ContainerBase> container;
 		public Class<? extends GuiContainer> gui;
+		public int mappingSize;
+		public int startingIndex;
 
 		public GuiMapping(Class<? extends GuiContainer> gui, Class<? extends ContainerBase> container,
 				Class<? extends TileEntity> tileEntity) {
 			this.tileEntity = tileEntity;
 			this.container = container;
 			this.gui = gui;
+			mappingSize = 1;
+		}
+
+		public GuiMapping(Class<? extends GuiContainer> gui, Class<? extends ContainerBase> container,
+				Class<? extends TileEntity> tileEntity, int mappingCount) {
+			this.tileEntity = tileEntity;
+			this.container = container;
+			this.gui = gui;
+			mappingSize = mappingCount;
 		}
 	}
 }

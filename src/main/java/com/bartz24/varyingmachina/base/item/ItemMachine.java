@@ -1,6 +1,7 @@
 package com.bartz24.varyingmachina.base.item;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -220,6 +221,7 @@ public class ItemMachine extends ItemBase {
 			gui.drawTexturedModalRect(gui.getGuiLeft() + s.xPos - 1, gui.getGuiTop() + s.yPos - 1, 59, 60, 18, 18);
 		}
 	}
+
 	public void drawForegroundGui(TileCasing tile, GuiCasing gui, FontRenderer fontRenderer, int mouseX, int mouseY) {
 	}
 
@@ -262,6 +264,18 @@ public class ItemMachine extends ItemBase {
 
 	public int getOutputItemSlots(ItemStack stack) {
 		return 0;
+	}
+
+	public List<String> getInputItemNames(ItemStack stack) {
+		List<String> names = new ArrayList();
+		FuelType type = MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().type;
+		if (type == FuelType.FURNACE || type == FuelType.ITEM)
+			names.add("Fuel");
+		return names;
+	}
+
+	public List<String> getOutputItemNames(ItemStack stack) {
+		return new ArrayList();
 	}
 
 	// Fluid Handler
@@ -410,12 +424,10 @@ public class ItemMachine extends ItemBase {
 		return (int) (getBaseTimeToProcess(world, pos, machineStack, recipe)
 				/ (float) getCombinedStat(MachineStat.SPEED, machineStack, world, pos));
 	}
-	
-	public float getHUDrain(World world, BlockPos pos, ItemStack machineStack)
-	{
+
+	public float getHUDrain(World world, BlockPos pos, ItemStack machineStack) {
 		return 4f * (float) getCombinedStat(MachineStat.SPEED, machineStack, world, pos);
 	}
-
 
 	public static class MachineFuelData {
 		public float huPerTick;

@@ -1,5 +1,6 @@
 package com.bartz24.varyingmachina.base.item;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,13 +8,15 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import com.bartz24.varyingmachina.References;
+import com.bartz24.varyingmachina.base.inventory.GuiCasing;
+import com.bartz24.varyingmachina.base.inventory.GuiModules;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
 import com.bartz24.varyingmachina.base.models.MachineModelLoader;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
-import com.bartz24.varyingmachina.base.tile.EnergyContainer.TransferType;
 import com.bartz24.varyingmachina.registry.MachineRegistry;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
@@ -171,6 +174,24 @@ public class ItemModule extends ItemBase {
 	}
 
 	public void onRemoveFromCasing(TileCasing casing, EnumFacing installedSide) {
-		
+
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void initGui(GuiModules gui, List buttonList, TileCasing casing) {
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void updateGuiComps(GuiModules gui, List buttonList, TileCasing casing) {
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void actionPerformed(TileCasing tile, GuiModules gui, int buttonClicked) throws IOException {
+	}
+
+	public void drawBackgroundGui(TileCasing tile, GuiModules gui, FontRenderer fontRenderer, int mouseX, int mouseY) {
+	}
+
+	public void drawForegroundGui(TileCasing tile, GuiModules gui, FontRenderer fontRenderer, int mouseX, int mouseY) {
 	}
 }

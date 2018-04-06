@@ -1,5 +1,6 @@
 package com.bartz24.varyingmachina.base.tile;
 
+import com.bartz24.varyingmachina.base.inventory.ItemHandlerNamed;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.item.ItemModule;
 import com.bartz24.varyingmachina.base.machine.FuelType;
@@ -8,7 +9,6 @@ import com.bartz24.varyingmachina.base.machine.MachineVariant.FuelInfo;
 import com.bartz24.varyingmachina.base.tile.EnergyContainer.TransferType;
 import com.bartz24.varyingmachina.registry.ModBlocks;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -94,11 +94,11 @@ public class TileCasing extends TileGenericPower implements ITickable {
 	}
 
 	public void setModule(ItemStack module, EnumFacing side) {
-		if(!modules.getStackInSlot(side.getIndex()).isEmpty() && module.isEmpty())
+		if (!modules.getStackInSlot(side.getIndex()).isEmpty() && module.isEmpty())
 			getModule(side).onRemoveFromCasing(this, side);
 		modules.setStackInSlot(side.getIndex(), module);
 		moduleData.set(side.getIndex(), new NBTTagCompound());
-		if(!modules.getStackInSlot(side.getIndex()).isEmpty())
+		if (!modules.getStackInSlot(side.getIndex()).isEmpty())
 			getModule(side).onAddToCasing(this, side);
 		markDirtyBlockUpdate();
 	}
@@ -153,7 +153,8 @@ public class TileCasing extends TileGenericPower implements ITickable {
 				changed = true;
 			}
 			if (this.getInputInventory().getSlots() == 0 && getMachine().getInputItemSlots(machineStored) > 0) {
-				this.setInputInventory(new ItemStackHandler(getMachine().getInputItemSlots(machineStored)) {
+				this.setInputInventory(new ItemHandlerNamed(getMachine().getInputItemSlots(machineStored),
+						getMachine().getInputItemNames(machineStored)) {
 					protected void onContentsChanged(int slot) {
 						super.onContentsChanged(slot);
 						TileCasing.this.markDirty();
@@ -162,7 +163,8 @@ public class TileCasing extends TileGenericPower implements ITickable {
 				changed = true;
 			}
 			if (this.getOutputInventory().getSlots() == 0 && getMachine().getOutputItemSlots(machineStored) > 0) {
-				this.setOutputInventory(new ItemStackHandler(getMachine().getOutputItemSlots(machineStored)) {
+				this.setOutputInventory(new ItemHandlerNamed(getMachine().getOutputItemSlots(machineStored),
+						getMachine().getOutputItemNames(machineStored)) {
 					protected void onContentsChanged(int slot) {
 						super.onContentsChanged(slot);
 						TileCasing.this.markDirty();
@@ -183,11 +185,11 @@ public class TileCasing extends TileGenericPower implements ITickable {
 				changed = true;
 			}
 			if (getInputInventory().getSlots() > 0) {
-				setInputInventory(new ItemStackHandler(0));
+				setInputInventory(new ItemHandlerNamed(0));
 				changed = true;
 			}
 			if (getOutputInventory().getSlots() > 0) {
-				setOutputInventory(new ItemStackHandler(0));
+				setOutputInventory(new ItemHandlerNamed(0));
 				changed = true;
 			}
 			if (tank.getFluid() != null) {

@@ -21,9 +21,9 @@ public class GuiBase extends GuiContainer {
 		this.drawDefaultBackground();
 		updateComponents();
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		this.renderHoveredToolTip(mouseX, mouseY);
 		for (GuiButton b : buttonList)
 			b.drawButtonForegroundLayer(mouseX, mouseY);
+		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	protected void updateComponents() {

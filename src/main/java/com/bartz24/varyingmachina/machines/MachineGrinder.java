@@ -8,15 +8,10 @@ import javax.annotation.Nullable;
 
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiFluidTank;
-import com.bartz24.varyingmachina.base.inventory.GuiFuel;
-import com.bartz24.varyingmachina.base.inventory.GuiRFBar;
 import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
-import com.bartz24.varyingmachina.base.machine.FuelType;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
-import com.bartz24.varyingmachina.base.machine.MachineVariant.FuelInfo;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
 import com.bartz24.varyingmachina.base.recipe.RecipeItem;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
@@ -166,13 +161,26 @@ public class MachineGrinder extends ItemMachine {
 	public boolean requiresFuel(ItemStack stack) {
 		return true;
 	}
-	
+
 	public int getInputItemSlots(ItemStack stack) {
 		return 1 + super.getInputItemSlots(stack);
 	}
 
 	public int getOutputItemSlots(ItemStack stack) {
 		return 1;
+	}
+
+	public List<String> getInputItemNames(ItemStack stack) {
+		List<String> names = new ArrayList();
+		names.add("Input");
+		names.addAll(super.getInputItemNames(stack));
+		return names;
+	}
+
+	public List<String> getOutputItemNames(ItemStack stack) {
+		List<String> names = new ArrayList();
+		names.add("Output");
+		return names;
 	}
 
 	public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
@@ -219,7 +227,7 @@ public class MachineGrinder extends ItemMachine {
 				* (float) getCombinedStat(MachineStat.SPEED, casing.machineStored, casing.getWorld(), casing.getPos()))
 				: 0));
 		gui.guiComponents.get(1).updateData(getCombinedStats(), casing);
-		gui.guiComponents.get(2).updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null),
-				time);
+		gui.guiComponents.get(2)
+				.updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null), time);
 	}
 }

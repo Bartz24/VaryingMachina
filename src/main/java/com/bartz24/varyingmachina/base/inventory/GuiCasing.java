@@ -71,8 +71,8 @@ public class GuiCasing extends GuiBase {
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		this.fontRenderer.drawString(
 				MachineVariant.writeVariantToStack(new ItemStack(ModBlocks.casing), tile.getVariant()).getDisplayName(),
-				8, 6, 4210752);
-		this.fontRenderer.drawString(tile.machineStored.getDisplayName(), 8, 14, 4210752);
+				8, 3, 4210752);
+		this.fontRenderer.drawString(tile.machineStored.getDisplayName(), 8, 11, 4210752);
 		this.fontRenderer.drawString(this.player.inventory.getDisplayName().getUnformattedText(), 8,
 				72 + (tile.machineStored.isEmpty() ? 0 : tile.getMachine().getInvPos(tile.machineStored)[1]), 4210752);
 		if (!tile.machineStored.isEmpty())

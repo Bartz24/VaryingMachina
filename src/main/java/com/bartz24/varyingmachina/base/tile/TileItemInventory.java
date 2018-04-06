@@ -1,5 +1,7 @@
 package com.bartz24.varyingmachina.base.tile;
 
+import com.bartz24.varyingmachina.base.inventory.ItemHandlerNamed;
+
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,8 +11,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class TileItemInventory extends TileBase {
-	private ItemStackHandler inputInventory;
-	private ItemStackHandler outputInventory;
+	private ItemHandlerNamed inputInventory;
+	private ItemHandlerNamed outputInventory;
 
 	public TileItemInventory(String name, int slots) {
 		this(name, slots, 0);
@@ -18,13 +20,13 @@ public class TileItemInventory extends TileBase {
 
 	public TileItemInventory(String name, int inputSlots, int outputSlots) {
 		super(name);
-		inputInventory = new ItemStackHandler(inputSlots) {
+		inputInventory = new ItemHandlerNamed(inputSlots) {
 			protected void onContentsChanged(int slot) {
 				super.onContentsChanged(slot);
 				TileItemInventory.this.markDirty();
 			}
 		};
-		outputInventory = new ItemStackHandler(outputSlots) {
+		outputInventory = new ItemHandlerNamed(outputSlots) {
 			protected void onContentsChanged(int slot) {
 				super.onContentsChanged(slot);
 				TileItemInventory.this.markDirty();
@@ -40,11 +42,11 @@ public class TileItemInventory extends TileBase {
 		return outputInventory;
 	}
 
-	public void setInputInventory(ItemStackHandler handler) {
+	public void setInputInventory(ItemHandlerNamed handler) {
 		inputInventory = handler;
 	}
 
-	public void setOutputInventory(ItemStackHandler handler) {
+	public void setOutputInventory(ItemHandlerNamed handler) {
 		outputInventory = handler;
 	}
 

@@ -2,8 +2,8 @@ package com.bartz24.varyingmachina.modules;
 
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
-import com.bartz24.varyingmachina.base.tile.TileCasing;
 import com.bartz24.varyingmachina.base.tile.EnergyContainer.TransferType;
+import com.bartz24.varyingmachina.base.tile.TileCasing;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -25,6 +25,7 @@ public class ModuleRemover extends ModuleTransfer {
 		super.update(casing, installedSide);
 		if (!casing.getWorld().isRemote) {
 			long ticks = casing.moduleData.get(installedSide.getIndex()).getLong("ticks");
+			int itemFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("itemFilter");
 			ItemStack thisStack = casing.modules.getStackInSlot(installedSide.getIndex());
 			MachineVariant variant = MachineVariant.readFromNBT(thisStack.getTagCompound());
 			if (canTick(variant, ticks)) {
@@ -34,6 +35,8 @@ public class ModuleRemover extends ModuleTransfer {
 					if (handler != null) {
 						int maxInsert = (int) getStat(variant, MachineStat.SIZE);
 						for (int i = 0; i < casing.getOutputInventory().getSlots(); i++) {
+							if (itemFilter >= 0 && itemFilter != i)
+								continue;
 							ItemStack extracted = casing.getOutputInventory().extractItem(i, maxInsert, true);
 							ItemStack attempt = ItemHandlerHelper.insertItemStacked(handler, extracted, true);
 							if (!casing.getOutputInventory().getStackInSlot(i).isEmpty() && !extracted.isEmpty()
@@ -59,7 +62,7 @@ public class ModuleRemover extends ModuleTransfer {
 
 	public boolean hasCapability(TileCasing casing, Capability<?> capability) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return casing.getMachine().getOutputItemSlots(casing.machineStored) > 0;		
+			return casing.getMachine().getOutputItemSlots(casing.machineStored) > 0;
 		return false;
 	}
 

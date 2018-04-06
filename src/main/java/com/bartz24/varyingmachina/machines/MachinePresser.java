@@ -129,6 +129,19 @@ public class MachinePresser extends ItemMachine {
 		return 1;
 	}
 
+	public List<String> getInputItemNames(ItemStack stack) {
+		List<String> names = new ArrayList();
+		names.add("Input");
+		names.addAll(super.getInputItemNames(stack));
+		return names;
+	}
+
+	public List<String> getOutputItemNames(ItemStack stack) {
+		List<String> names = new ArrayList();
+		names.add("Output");
+		return names;
+	}
+
 	public MachineStat[] getCombinedStats() {
 		List<MachineStat> combinedStats = new ArrayList(Arrays.asList(stats));
 		combinedStats.add(MachineStat.PRESSURE);

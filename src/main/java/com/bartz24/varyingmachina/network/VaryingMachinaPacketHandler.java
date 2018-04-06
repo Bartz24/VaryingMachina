@@ -1,6 +1,7 @@
 package com.bartz24.varyingmachina.network;
 
 import com.bartz24.varyingmachina.References;
+import com.bartz24.varyingmachina.network.ModuleDataMessage.ModuleDataMessageHandler;
 import com.bartz24.varyingmachina.network.OpenGUIMessage.OpenGUIMessageHandler;
 import com.bartz24.varyingmachina.network.PresserPatternMessage.PresserPatternMessageHandler;
 
@@ -15,5 +16,6 @@ public class VaryingMachinaPacketHandler {
 	public static void preInit() {
 		instance.registerMessage(OpenGUIMessageHandler.class, OpenGUIMessage.class, 0, Side.SERVER);
 		instance.registerMessage(PresserPatternMessageHandler.class, PresserPatternMessage.class, 1, Side.SERVER);
+		instance.registerMessage(ModuleDataMessageHandler.class, ModuleDataMessage.class, 2, Side.SERVER);
 	}
 }

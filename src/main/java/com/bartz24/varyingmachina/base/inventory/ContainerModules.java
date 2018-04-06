@@ -6,6 +6,7 @@ import com.bartz24.varyingmachina.base.item.ItemModule;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.SlotItemHandler;
@@ -13,15 +14,20 @@ import net.minecraftforge.items.SlotItemHandler;
 public class ContainerModules extends ContainerBase {
 	protected TileCasing tile;
 
-	public ContainerModules(EntityPlayer player, TileCasing te) {
+	public ContainerModules(EntityPlayer player, TileCasing te, int moduleIndex) {
 		super(player, te);
+		moduleIndex--;
 		tile = te;
-		this.addSlotToContainer(getNewModuleSlot(EnumFacing.UP.ordinal(), 70, 20));
-		this.addSlotToContainer(getNewModuleSlot(EnumFacing.WEST.ordinal(), 52, 38));
-		this.addSlotToContainer(getNewModuleSlot(EnumFacing.SOUTH.ordinal(), 70, 38));
-		this.addSlotToContainer(getNewModuleSlot(EnumFacing.EAST.ordinal(), 88, 38));
-		this.addSlotToContainer(getNewModuleSlot(EnumFacing.DOWN.ordinal(), 70, 56));
-		this.addSlotToContainer(getNewModuleSlot(EnumFacing.NORTH.ordinal(), 88, 56));
+		if (moduleIndex >= 0 && moduleIndex < 6) {
+			this.addSlotToContainer(getNewModuleSlot(moduleIndex, 80, 21));
+		} else {
+			this.addSlotToContainer(getNewModuleSlot(EnumFacing.UP.ordinal(), 80, 21));
+			this.addSlotToContainer(getNewModuleSlot(EnumFacing.WEST.ordinal(), 62, 39));
+			this.addSlotToContainer(getNewModuleSlot(EnumFacing.SOUTH.ordinal(), 80, 39));
+			this.addSlotToContainer(getNewModuleSlot(EnumFacing.EAST.ordinal(), 98, 39));
+			this.addSlotToContainer(getNewModuleSlot(EnumFacing.DOWN.ordinal(), 80, 57));
+			this.addSlotToContainer(getNewModuleSlot(EnumFacing.NORTH.ordinal(), 98, 57));
+		}
 	}
 
 	private SlotItemHandler getNewModuleSlot(int index, int x, int y) {
