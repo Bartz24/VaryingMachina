@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bartz24.varyingmachina.References;
-import com.bartz24.varyingmachina.machines.recipes.PresserProcessRecipe;
 
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -64,13 +63,16 @@ public class ProcessRecipeCategory<T extends IRecipeWrapper> implements IRecipeC
 		List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
 		for (int slot = 0; slot < getInputSlotLocations().size(); slot++) {
 			Vec2f pos = getInputSlotLocations().get(slot);
-			layout.getItemStacks().init(slot, true, (int) pos.x, (int) pos.y);
-			layout.getItemStacks().set(slot, inputs.get(slot));
+			if (slot < inputs.size())
+			{
+				layout.getItemStacks().init(slot, true, (int) pos.x, (int) pos.y);
+				layout.getItemStacks().set(slot, inputs.get(slot));
+			}
 		}
 
 		List<List<ItemStack>> outputs = ingredients.getOutputs(ItemStack.class);
 		for (int slot = getInputSlotLocations().size(); slot < getInputSlotLocations().size()
-				+ getInputSlotLocations().size(); slot++) {
+				+ getOutputSlotLocations().size(); slot++) {
 			Vec2f pos = getOutputSlotLocations().get(slot - getInputSlotLocations().size());
 			layout.getItemStacks().init(slot, false, (int) pos.x, (int) pos.y);
 			layout.getItemStacks().set(slot, outputs.get(slot - getInputSlotLocations().size()));

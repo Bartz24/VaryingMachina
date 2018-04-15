@@ -39,10 +39,6 @@ public class SmelterRecipes {
 
 	@ProcessRecipeRegistry
 	public static void registerRecipes() {
-		for (ItemStack stack : FurnaceRecipes.instance().getSmeltingList().keySet()) {
-			smelterRecipes.addRecipe(new RecipeItem(FurnaceRecipes.instance().getSmeltingResult(stack)),
-					new RecipeItem(stack), 0, 100, 0);
-		}
 		smelterRecipes.addRecipe(new RecipeOreDict("ingotSteel", 1), new RecipeOreDict("dustSteel", 1), 1370, 12000,
 				890);
 		smelterRecipes.addRecipe(new RecipeOreDict("ingotSignalum", 1), new RecipeOreDict("dustSignalum", 1), 1362, 1200,
@@ -51,6 +47,10 @@ public class SmelterRecipes {
 				1025);
 		smelterRecipes.addRecipe(new RecipeOreDict("ingotEnderium", 1), new RecipeOreDict("dustEnderium", 1), 2164, 3600,
 				1464);
+		for (ItemStack stack : FurnaceRecipes.instance().getSmeltingList().keySet()) {
+			smelterRecipes.addRecipe(new RecipeItem(FurnaceRecipes.instance().getSmeltingResult(stack)),
+					new RecipeItem(stack), 0, 100, 0);
+		}
 
 	}
 }

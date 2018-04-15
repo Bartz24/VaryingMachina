@@ -92,6 +92,8 @@ public class GrinderRecipes {
 				3f, 2f, 5f);
 		addRecipe(new RecipeItem(new ItemStack(Items.SUGAR)), new RecipeItem(new ItemStack(Items.REEDS)),
 				1f, 2f, 4f);
+		addRecipe(new RecipeItem(new ItemStack(Items.DYE, 1, 15)), new RecipeItem(new ItemStack(Items.BONE)),
+				1.4f, 3f, 8f);
 
 	}
 

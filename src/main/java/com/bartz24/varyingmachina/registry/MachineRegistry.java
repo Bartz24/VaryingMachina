@@ -105,8 +105,8 @@ public class MachineRegistry {
 		for (Method method : recipeRegistries) {
 			try {
 				method.invoke(null);
-			} finally {
-				continue;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

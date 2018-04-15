@@ -16,5 +16,11 @@ public interface RecipeObject {
 	public float getRatio(RecipeObject check);
 
 	public boolean isValid();
+	
+	public int getCount();
+	
+	public RecipeObject setCount(int count);
+
+	public RecipeObject copy();
 
 }

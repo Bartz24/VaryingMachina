@@ -31,12 +31,19 @@ varyingmachina.lightmatter=Light Matter
 
 item.varyingmachina.darkmatter.name=Dark Matter
 item.varyingmachina.lightmatter.name=Light Matter
+item.varyingmachina.circuit.weak.name=Weak Circuit
+item.varyingmachina.circuit.basic.name=Basic Circuit
+item.varyingmachina.circuit.improved.name=Improved Circuit
+item.varyingmachina.circuit.advanced.name=Advanced Circuit
+item.varyingmachina.circuit.ultra.name=Ultra Circuit
+item.varyingmachina.circuit.unstable.name=Unstable Circuit
 
 tile.varyingmachina.casing.name=%s Casing
 
 item.varyingmachina.smelter.name=%s Smelter
 item.varyingmachina.grinder.name=%s Grinder
 item.varyingmachina.presser.name=%s Presser
+item.varyingmachina.assembler.name=%s Machina Assembler
 
 item.varyingmachina.regulator.name=%s Regulator
 item.varyingmachina.inserter.name=%s Inserter
@@ -47,3 +54,4 @@ item.varyingmachina.gearbox.name=%s Gearbox
 jei.varyingmachina.recipe.smelter=Smelter
 jei.varyingmachina.recipe.grinder=Grinder
 jei.varyingmachina.recipe.presser=Presser
+jei.varyingmachina.recipe.assembler=Machina Assembler

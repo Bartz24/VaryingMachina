@@ -6,20 +6,29 @@ import java.util.List;
 import com.bartz24.varyingmachina.ItemHelper;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
-public class RecipeListItem implements RecipeObject {
+public class RecipeOreDictPriority implements RecipeObject {
 
-    private List<ItemStack> stacks;
+    private String[] oreTypes;
     private int amount;
 
-    public RecipeListItem(List<ItemStack> stacks, int count) {
-        this.stacks = stacks;
+    public RecipeOreDictPriority(int count, String... oreTypes) {
+        this.oreTypes = oreTypes;
         amount = count;
+    }
+
+    private String getFirstOreType() {
+        for (int i = 0; i < oreTypes.length; i++) {
+            if (OreDictionary.getOres(oreTypes[i]).size() > 0)
+                return oreTypes[i];
+        }
+        return oreTypes[oreTypes.length - 1];
     }
 
     public List<ItemStack> getRepresentativeObject() {
         List<ItemStack> stacks = new ArrayList();
-        for (ItemStack stack : this.stacks) {
+        for (ItemStack stack : OreDictionary.getOres(getFirstOreType())) {
             ItemStack copy = stack.copy();
             copy.setCount(amount);
             stacks.add(copy);
@@ -31,9 +40,9 @@ public class RecipeListItem implements RecipeObject {
     public boolean matches(RecipeObject check) {
         if (!(check instanceof RecipeItem))
             return false;
-        for (ItemStack stack : stacks) {
+        for (ItemStack stack : getRepresentativeObject()) {
             if (ItemHelper.itemStacksEqualOD(stack, (ItemStack) check.getRepresentativeObject())
-                    && ((ItemStack) check.getRepresentativeObject()).getCount() <= amount)
+                    && ((ItemStack) check.getRepresentativeObject()).getCount() >= amount)
                 return true;
         }
         return false;
@@ -43,7 +52,7 @@ public class RecipeListItem implements RecipeObject {
     public boolean matchesExact(RecipeObject check) {
         if (!(check instanceof RecipeItem))
             return false;
-        for (ItemStack stack : stacks) {
+        for (ItemStack stack : getRepresentativeObject()) {
             if (ItemHelper.itemStacksEqualOD(stack, (ItemStack) check.getRepresentativeObject())
                     && ((ItemStack) check.getRepresentativeObject()).getCount() == amount)
                 return true;
@@ -61,9 +70,9 @@ public class RecipeListItem implements RecipeObject {
 
     @Override
     public boolean isValid() {
-        if (stacks.size() == 0)
+        if (OreDictionary.getOres(getFirstOreType()).size() == 0)
             return false;
-        for (ItemStack stack : stacks) {
+        for (ItemStack stack : OreDictionary.getOres(getFirstOreType())) {
             if (stack.isEmpty())
                 return false;
         }
@@ -83,8 +92,6 @@ public class RecipeListItem implements RecipeObject {
 
     @Override
     public RecipeObject copy() {
-        RecipeListItem list = new RecipeListItem(new ArrayList(), amount + 0);
-        list.stacks.addAll(stacks);
-        return list;
+        return new RecipeOreDictPriority(amount + 0, oreTypes.clone());
     }
 }

@@ -46,6 +46,7 @@ public class MachineGrinder extends ItemMachine {
 			} else
 				machineStat.addSingleInfo(stack, tooltip);
 		}
+		MachineVariant.readFromNBT(stack.getTagCompound()).addFuelTooltip(tooltip);
 	}
 
 	public void update(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {

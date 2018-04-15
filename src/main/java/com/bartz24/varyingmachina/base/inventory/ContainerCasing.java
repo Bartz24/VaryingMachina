@@ -18,7 +18,7 @@ public class ContainerCasing extends ContainerBase
 
 		if (!te.machineStored.isEmpty())
 		{
-			for (Slot s : te.getMachine().getSlots(te, new ArrayList()))
+			for (Slot s : te.getMachine().getSlots(te, new ArrayList<>()))
 				this.addSlotToContainer(s);
 		}
 	}

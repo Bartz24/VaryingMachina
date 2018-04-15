@@ -2,10 +2,12 @@ package com.bartz24.varyingmachina.jei;
 
 import com.bartz24.varyingmachina.References;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
+import com.bartz24.varyingmachina.jei.machines.AssemblerRecipeCategory;
 import com.bartz24.varyingmachina.jei.machines.GrinderRecipeCategory;
 import com.bartz24.varyingmachina.jei.machines.PresserProcessRecipeWrapper;
 import com.bartz24.varyingmachina.jei.machines.PresserRecipeCategory;
 import com.bartz24.varyingmachina.jei.machines.SmelterRecipeCategory;
+import com.bartz24.varyingmachina.registry.ModBlocks;
 import com.bartz24.varyingmachina.registry.ModItems;
 
 import mezz.jei.api.IGuiHelper;
@@ -16,6 +18,7 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 @JEIPlugin
@@ -26,6 +29,9 @@ public class JEIPluginVM implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
+		subtypeRegistry.useNbtForSubtypes(Item.REGISTRY.getObject(ModBlocks.casing.getRegistryName()));
+		subtypeRegistry.useNbtForSubtypes(ModItems.smelter, ModItems.grinder, ModItems.presser, ModItems.assembler);
+		subtypeRegistry.useNbtForSubtypes(ModItems.regulator, ModItems.inserter, ModItems.remover, ModItems.bellow, ModItems.gearbox);
 	}
 
 	@Override
@@ -37,6 +43,7 @@ public class JEIPluginVM implements IModPlugin {
 		registry.addRecipeCategories(new SmelterRecipeCategory(guiHelper));
 		registry.addRecipeCategories(new GrinderRecipeCategory(guiHelper));
 		registry.addRecipeCategories(new PresserRecipeCategory(guiHelper));
+		registry.addRecipeCategories(new AssemblerRecipeCategory(guiHelper));
 	}
 
 	@Override
@@ -51,6 +58,8 @@ public class JEIPluginVM implements IModPlugin {
 		addCatalysts(registry, (ItemMachine) ModItems.grinder, "grinder");
 		addProcessRecipes(PresserProcessRecipeWrapper.class, registry, "presser");
 		addCatalysts(registry, (ItemMachine) ModItems.presser, "presser");
+		addProcessRecipes(ProcessRecipeWrapper.class, registry, "assembler");
+		addCatalysts(registry, (ItemMachine) ModItems.assembler, "assembler");
 
 		// TODO add click areas
 	}
