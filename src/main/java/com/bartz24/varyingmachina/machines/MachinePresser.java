@@ -56,7 +56,7 @@ public class MachinePresser extends ItemMachine {
 					Integer.MAX_VALUE);
 			ProcessRecipe recipe = PresserRecipes.presserRecipes.getRecipe(input);
 			if (recipe != null && getCasingTile(world, pos).getOutputInventory()
-					.insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty()) {
+					.insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty() && curHU > 0) {
 				data.setBoolean("running", true);
 				time++;
 				curHU -= getHUDrain(world, pos, machineStack);

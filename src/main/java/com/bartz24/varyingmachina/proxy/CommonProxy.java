@@ -2,6 +2,7 @@ package com.bartz24.varyingmachina.proxy;
 
 import com.bartz24.varyingmachina.VaryingMachina;
 import com.bartz24.varyingmachina.base.machine.WrenchHelper;
+import com.bartz24.varyingmachina.jaopca.JAOPCAPlugin;
 import com.bartz24.varyingmachina.network.VaryingMachinaPacketHandler;
 import com.bartz24.varyingmachina.registry.MachineRegistry;
 import com.bartz24.varyingmachina.registry.ModEntities;
@@ -9,6 +10,7 @@ import com.bartz24.varyingmachina.registry.ModGuiHandler;
 import com.bartz24.varyingmachina.registry.ModItems;
 import com.bartz24.varyingmachina.registry.ModVariants;
 
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,6 +25,8 @@ public class CommonProxy {
 		MachineRegistry.getRegistryRecipes(e);
 		new ModGuiHandler();
 		VaryingMachinaPacketHandler.preInit();
+		if(Loader.isModLoaded("jaopca"))
+			JAOPCAPlugin.preInit();
 	}
 
 	public void init(FMLInitializationEvent e) {

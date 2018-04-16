@@ -157,11 +157,11 @@ public class ItemModule extends ItemBase {
 		}
 	}
 
-	public boolean hasCapability(TileCasing casing, Capability<?> capability) {
+	public boolean hasCapability(TileCasing casing, Capability<?> capability, EnumFacing installedSide) {
 		return false;
 	}
 
-	public <T> T getCapability(TileCasing casing, Capability<T> capability) {
+	public <T> T getCapability(TileCasing casing, Capability<T> capability, EnumFacing installedSide) {
 		return null;
 	}
 

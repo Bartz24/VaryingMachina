@@ -22,7 +22,7 @@ public class GuiFluidTank implements GuiComp {
 		xPos = x;
 		yPos = y;
 		height = 37;
-		width = 18;
+		width = 10;
 		updateData(maxFluid, curFluid, fluid);
 	}
 

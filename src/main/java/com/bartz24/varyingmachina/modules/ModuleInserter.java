@@ -26,6 +26,7 @@ public class ModuleInserter extends ModuleTransfer {
 		if (!casing.getWorld().isRemote) {
 			long ticks = casing.moduleData.get(installedSide.getIndex()).getLong("ticks");
 			int itemFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("itemFilter");
+			int fluidFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("fluidFilter");
 			ItemStack thisStack = casing.modules.getStackInSlot(installedSide.getIndex());
 			MachineVariant variant = MachineVariant.readFromNBT(thisStack.getTagCompound());
 			if (canTick(variant, ticks)) {
@@ -43,6 +44,7 @@ public class ModuleInserter extends ModuleTransfer {
 										&& maxExtract - attempt.getCount() > 0) {
 									ItemHandlerHelper.insertItemStacked(casing.getInputInventory(),
 											handler.extractItem(i, maxExtract - attempt.getCount(), false), false);
+									casing.markDirtyBlockUpdate();
 									break;
 								}
 							}
@@ -54,6 +56,7 @@ public class ModuleInserter extends ModuleTransfer {
 										&& maxExtract - attempt.getCount() > 0) {
 									casing.getInputInventory().insertItem(itemFilter,
 											handler.extractItem(i, maxExtract - attempt.getCount(), false), false);
+									casing.markDirtyBlockUpdate();
 									break;
 								}
 							}
@@ -65,27 +68,29 @@ public class ModuleInserter extends ModuleTransfer {
 							CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 					if (handler != null) {
 						int maxExtract = (int) getStat(variant, MachineStat.SIZE) * 100;
-						handler.drain(casing.getTank().fill(handler.drain(maxExtract, false), true), true);
+						handler.drain(getCapability(casing, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, installedSide).fill(handler.drain(maxExtract, false), true), true);
 					}
 				}
 			}
 		}
 	}
 
-	public boolean hasCapability(TileCasing casing, Capability<?> capability) {
+	public boolean hasCapability(TileCasing casing, Capability<?> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return casing.getMachine().getInputItemSlots(casing.machineStored) > 0;
-		return super.hasCapability(casing, capability);
+		return super.hasCapability(casing, capability, installedSide);
 	}
 
-	public <T> T getCapability(TileCasing casing, Capability<T> capability) {
+	public <T> T getCapability(TileCasing casing, Capability<T> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T) casing.getInputInventory();
-		else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return (T) casing.getTank();
+		else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			int fluidFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("fluidFilter");
+			return fluidFilter == -1 ? (T) casing.inputFluids : (T) casing.inputFluids.getTankInSlot(fluidFilter);
+		}
 		else if (capability == CapabilityEnergy.ENERGY)
 			return (T) casing.energyStorage;
-		return super.getCapability(casing, capability);
+		return super.getCapability(casing, capability, installedSide);
 	}
 
 	public void onAddToCasing(TileCasing casing, EnumFacing installedSide) {

@@ -19,7 +19,7 @@ public class RecipeFluid implements RecipeObject {
         if (!(check instanceof RecipeFluid))
             return false;
         return stack.isFluidEqual((FluidStack) check.getRepresentativeObject())
-                && ((FluidStack) check.getRepresentativeObject()).amount <= stack.amount;
+                && ((FluidStack) check.getRepresentativeObject()).amount >= stack.amount;
     }
 
     @Override

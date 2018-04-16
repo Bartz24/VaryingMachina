@@ -46,7 +46,7 @@ public class MachineSmelter extends ItemMachine {
 			ProcessRecipe recipe = SmelterRecipes.smelterRecipes.getRecipe(new RecipeItem(smelt), false, false, curHU,
 					Integer.MAX_VALUE, getCombinedStat(MachineStat.PRESSURE, machineStack, world, pos));
 			if (recipe != null && getCasingTile(world, pos).getOutputInventory()
-					.insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty()) {
+					.insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty() && curHU > 0) {
 				data.setBoolean("running", true);
 				time++;
 				curHU -= getHUDrain(world, pos, machineStack);

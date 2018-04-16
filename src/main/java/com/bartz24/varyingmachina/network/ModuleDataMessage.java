@@ -69,6 +69,7 @@ public class ModuleDataMessage implements IMessage {
 			TileCasing casing = (TileCasing) world.getTileEntity(message.getPos());
 			NBTTagCompound modData = casing.moduleData.get(message.getSide().ordinal());			
 			modData.setTag(message.getModTag(), newModData);
+			casing.markDirty();
 
 			return null;
 		}

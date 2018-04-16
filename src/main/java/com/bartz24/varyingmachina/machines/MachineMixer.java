@@ -1,57 +1,80 @@
 package com.bartz24.varyingmachina.machines;
 
 import com.bartz24.varyingmachina.ItemHelper;
+import com.bartz24.varyingmachina.RandomHelper;
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiHeatBar;
+import com.bartz24.varyingmachina.base.inventory.GuiFluidTank;
 import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
+import com.bartz24.varyingmachina.base.machine.FuelType;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
+import com.bartz24.varyingmachina.base.machine.MachineVariant;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
+import com.bartz24.varyingmachina.base.recipe.RecipeFluid;
 import com.bartz24.varyingmachina.base.recipe.RecipeItem;
 import com.bartz24.varyingmachina.base.recipe.RecipeObject;
+import com.bartz24.varyingmachina.base.tile.FluidTankFiltered;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
 import com.bartz24.varyingmachina.machines.recipes.AssemblerRecipes;
-import com.bartz24.varyingmachina.machines.recipes.SmelterRecipes;
+import com.bartz24.varyingmachina.machines.recipes.MixerRecipes;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MachineAssembler extends ItemMachine {
+public class MachineMixer extends ItemMachine {
 
-    public MachineAssembler() {
-        super("assembler", MachineStat.SPEED, MachineStat.EFFICIENCY);
+    public MachineMixer() {
+        super("mixer", MachineStat.SPEED, MachineStat.EFFICIENCY, MachineStat.PRESSURE);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        for (MachineStat machineStat : stats) {
+            if (machineStat == MachineStat.SPEED) {
+                MachineVariant variant = MachineVariant.readFromNBT(stack.getTagCompound());
+                tooltip.add(TextFormatting.BLUE + "Speed: "
+                        + Integer.toString((int) (variant.getStat(MachineStat.SPEED) * 1000f)) + " rad/s");
+            } else
+                machineStat.addSingleInfo(stack, tooltip);
+        }
+        MachineVariant.readFromNBT(stack.getTagCompound()).addFuelTooltip(tooltip);
     }
 
     public void update(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {
-        assemble(world, pos, machineStack, data);
+        mix(world, pos, machineStack, data);
     }
 
-    void assemble(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {
+    void mix(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {
         if (!world.isRemote) {
             boolean changedValue = false;
             heatUp(machineStack, world, pos, data);
             int time = data.getInteger("time");
             float curHU = data.getFloat("curHU");
-
-            ProcessRecipe recipe = AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(world, pos), false, false, Integer.MAX_VALUE);
+            ProcessRecipe recipe = MixerRecipes.mixerRecipes.getRecipe(getInputs(world, pos), false, false, getCombinedStat(MachineStat.SPEED, machineStack, world, pos), getCombinedStat(MachineStat.PRESSURE, machineStack, world, pos));
             if (recipe != null && getCasingTile(world, pos).getOutputInventory()
                     .insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty() && curHU > 0) {
                 data.setBoolean("running", true);
                 time++;
                 curHU -= getHUDrain(world, pos, machineStack);
-                if (time >= getTimeToProcess(world, pos, getCasingTile(world, pos).machineStored, recipe)) {
+                if (time >= getTimeToProcess(world, pos, machineStack, recipe)) {
                     getCasingTile(world, pos).getOutputInventory().insertItem(0, recipe.getItemOutputs().get(0), false);
                     shrinkInputs(recipe.getItemInputs(), world, pos);
+                    if(recipe.getFluidInputs().size() > 0)
+                        getCasingTile(world, pos).inputFluids.getTankInSlot(getInputFluids(machineStack).length - 1).drain(recipe.getFluidInputs().get(0), true);
                     time = 0;
                 }
                 changedValue = true;
@@ -87,6 +110,9 @@ public class MachineAssembler extends ItemMachine {
 
     private List<RecipeObject> getInputs(World world, BlockPos pos) {
         List<RecipeObject> inputs = new ArrayList();
+        TileCasing casing = getCasingTile(world, pos);
+        if (casing.inputFluids.getTankInSlot(getInputFluids(casing.machineStored).length - 1).getFluidAmount() > 0)
+            inputs.add(new RecipeFluid(casing.inputFluids.getTankInSlot(getInputFluids(casing.machineStored).length - 1).getFluid()));
         for (int i = 0; i < 9; i++) {
             if (!getCasingTile(world, pos).getInputInventory().getStackInSlot(i).isEmpty())
                 inputs.add(new RecipeItem(getCasingTile(world, pos).getInputInventory().getStackInSlot(i)));
@@ -95,8 +121,7 @@ public class MachineAssembler extends ItemMachine {
     }
 
     public float getBaseTimeToProcess(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
-        return recipe == null ? super.getBaseTimeToProcess(world, pos, machineStack, recipe)
-                : recipe.getNumParameters()[0];
+        return 600;
     }
 
     public boolean requiresFuel(ItemStack stack) {
@@ -109,6 +134,18 @@ public class MachineAssembler extends ItemMachine {
 
     public int getOutputItemSlots(ItemStack stack) {
         return 1;
+    }
+
+    public Fluid[] getInputFluids(ItemStack stack) {
+        List<Fluid> fluids = new ArrayList(Arrays.asList(super.getInputFluids(stack)));
+        fluids.add(null);
+        return fluids.toArray(new Fluid[fluids.size()]);
+    }
+
+    public int[] getMaxInputFluids(ItemStack stack) {
+        List<Integer> amounts = RandomHelper.toIntList(super.getMaxInputFluids(stack));
+        amounts.add(16000);
+        return RandomHelper.toIntArray(amounts);
     }
 
     public List<String> getInputItemNames(ItemStack stack) {
@@ -137,8 +174,23 @@ public class MachineAssembler extends ItemMachine {
     public void initGui(GuiCasing gui, List buttonList, TileCasing casing) {
         super.initGui(gui, buttonList, casing);
         int time = casing.machineData.getInteger("time");
-        ProcessRecipe recipe = AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(casing.getWorld(), casing.getPos()), false, false, Integer.MAX_VALUE);
-        gui.guiComponents.add(new GuiStatsComp(155, 25, getCombinedStats(), casing));
+        ProcessRecipe recipe = MixerRecipes.mixerRecipes.getRecipe(getInputs(casing.getWorld(), casing.getPos()), false, false, getCombinedStat(MachineStat.SPEED, casing.machineStored, casing.getWorld(), casing.getPos()), getCombinedStat(MachineStat.PRESSURE, casing.machineStored, casing.getWorld(), casing.getPos()));
+        FluidTankFiltered tank = casing.inputFluids.getTankInSlot(getInputFluids(casing.machineStored).length - 1);
+        gui.guiComponents.add(new GuiFluidTank(20, 33, tank.getCapacity(),
+                tank.getFluidAmount(), tank.getFluid()));
+        gui.guiComponents.add(new GuiStatsComp(155, 25, getCombinedStats(), casing) {
+            @Override
+            public void addStatTooltip(TileCasing casing, MachineStat stat, List<String> text) {
+                if (stat == MachineStat.SPEED) {
+                    text.add(
+                            TextFormatting.BLUE + "Speed: "
+                                    + Integer.toString((int) (MachineMixer.this.getCombinedStat(MachineStat.SPEED,
+                                    casing.machineStored, casing.getWorld(), casing.getPos()) * 1000f))
+                                    + " rad/s");
+                } else
+                    super.addStatTooltip(casing, stat, text);
+            }
+        });
         gui.guiComponents.add(new GuiArrowProgress(95, 38,
                 getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time));
     }
@@ -147,9 +199,12 @@ public class MachineAssembler extends ItemMachine {
     public void updateGuiComps(GuiCasing gui, List buttonList, TileCasing casing) {
         super.updateGuiComps(gui, buttonList, casing);
         int time = casing.machineData.getInteger("time");
-        ProcessRecipe recipe = AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(casing.getWorld(), casing.getPos()), false, false, Integer.MAX_VALUE);
-        gui.guiComponents.get(1).updateData(getCombinedStats(), casing);
-        gui.guiComponents.get(2)
+        ProcessRecipe recipe = MixerRecipes.mixerRecipes.getRecipe(getInputs(casing.getWorld(), casing.getPos()), false, false, getCombinedStat(MachineStat.SPEED, casing.machineStored, casing.getWorld(), casing.getPos()), getCombinedStat(MachineStat.PRESSURE, casing.machineStored, casing.getWorld(), casing.getPos()));
+        FluidTankFiltered tank = casing.inputFluids.getTankInSlot(getInputFluids(casing.machineStored).length - 1);
+        gui.guiComponents.get(1).updateData(tank.getCapacity(),
+                tank.getFluidAmount(), tank.getFluid());
+        gui.guiComponents.get(2).updateData(getCombinedStats(), casing);
+        gui.guiComponents.get(3)
                 .updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
     }
 }

@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 @ProcessRecipeRegistry
 public class AssemblerRecipes {
@@ -55,10 +56,10 @@ public class AssemblerRecipes {
                             new RecipeItem(new ItemStack(Blocks.PISTON)), getCircuitItem(variant.getMachineTier())),
                     (float) (368f * Math.pow(tierRate, variant.getMachineTier())));
             assemblerRecipes.addRecipe(
-                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.assembler), variant)),
-                    Arrays.asList(variant.getPlateRecipeItem(20),
-                            variant.getGearRecipeItem(4), getCircuitItem(variant.getMachineTier())),
-                    (float) (440f * Math.pow(tierRate, variant.getMachineTier())));
+                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.mixer), variant)),
+                    Arrays.asList(variant.getPlateRecipeItem(18),
+                            getGlassItem(variant.getMachineTier()), getCircuitItem(variant.getMachineTier())),
+                    (float) (312f * Math.pow(tierRate, variant.getMachineTier())));
 
             assemblerRecipes.addRecipe(
                     new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.regulator), variant)),
@@ -102,41 +103,41 @@ public class AssemblerRecipes {
         assemblerRecipes.addRecipe(
                 getCircuitItem(2),
                 Arrays.asList(getCircuitItem(1),
-                        new RecipeOreDictPriority(4, "plateBronze", "plateLead", "ingotBronze", "ingotLead", "plateIron", "ingotIron"),
+                        new RecipeListOreDict(4, "plateBronze", "plateLead", "plateIron"),
                         new RecipeItem(new ItemStack(Items.BLAZE_POWDER, 3)),
-                        new RecipeOreDictPriority(2, "rodCopper", "rodTin", "ingotCopper", "ingotTin", "rodGold", "ingotGold")),
+                        new RecipeListOreDict(2, "wireCopper", "wireTin", "wireGold")),
                 220f);
 
         assemblerRecipes.addRecipe(
                 getCircuitItem(3),
                 Arrays.asList(getCircuitItem(2),
-                        new RecipeOreDictPriority(4, "plateElectricalSteel", "plateConstantan", "plateInvar", "plateSteel", "ingotElectricalSteel", "ingotConstantan", "ingotInvar", "ingotSteel", "plateIron", "ingotIron"),
+                        new RecipeListOreDict(4, "plateElectricalSteel", "plateConstantan", "plateInvar", "plateSteel"),
                         new RecipeItem(new ItemStack(Items.REDSTONE, 8)),
-                        new RecipeOreDictPriority(2, "rodEnergeticAlloy", "rodOsmium", "rodSilver", "ingotEnergeticAlloy", "ingotOsmium", "ingotSilver", "rodGold", "ingotGold")),
+                        new RecipeListOreDict(6, "wireEnergeticAlloy", "wireOsmium", "wireSilver", "wireConductiveIron", "wireAluminium")),
                 590f);
 
         assemblerRecipes.addRecipe(
                 getCircuitItem(4),
                 Arrays.asList(getCircuitItem(3),
-                        new RecipeOreDictPriority(4, "plateSoularium", "plateManyullyn", "plateTitanium", "ingotSoularium", "ingotManyullyn", "ingotTitanium", "plateIron", "ingotIron"),
+                        new RecipeListOreDict(4, "plateSoularium", "plateManyullyn", "plateTitanium", "platePlatinum"),
                         new RecipeItem(new ItemStack(Items.GLOWSTONE_DUST, 12)),
-                        new RecipeOreDictPriority(2, "rodSignalum", "rodElectrum", "rodCobalt", "rodAluminum", "ingotSignalum", "ingotElectrum", "ingotAluminum", "rodGold", "ingotGold")),
+                        new RecipeListOreDict(6, "wireSignalum", "wireElectrum", "wireCobalt", "wirePulsatingIron", "wireDiamond")),
                 1610f);
 
         assemblerRecipes.addRecipe(
                 getCircuitItem(5),
                 Arrays.asList(getCircuitItem(4),
-                        new RecipeOreDictPriority(4, "plateRefinedObsidian", "plateTungstensteel", "plateEnderium", "plateDarkSteel", "ingotRefinedObsidian", "ingotTungstensteel", "ingotEnderium", "ingotDarkSteel", "plateIron", "ingotIron"),
+                        new RecipeListOreDict(4, "plateRefinedObsidian", "plateTungstensteel", "plateEnderium", "plateDarkSteel", "plateEndSteel"),
                         new RecipeOreDictPriority(8, "dustAerotheum", "dustCoal", "dustGlowstone"),
-                        new RecipeOreDictPriority(2, "rodVibrantAlloy", "rodLumium", "rodPlatinum", "ingotVibrantAlloy", "ingotLumium", "ingotPlatinum", "rodGold", "ingotGold")),
+                        new RecipeListOreDict(6, "wireVibrantAlloy", "wireLumium", "wireEmerald")),
                 4390f);
 
         assemblerRecipes.addRecipe(
                 getCircuitItem(6),
                 Arrays.asList(getCircuitItem(5),
                         new RecipeItem(new ItemStack(ModItems.lightmatter, 4)),
-                        new RecipeOreDictPriority(32, "dustCryotheum", "dustCoal", "dustGlowstone"),
-                        new RecipeItem(new ItemStack(ModItems.darkmatter, 2))),
+                        new RecipeOreDictPriority(12, "dustCryotheum", "dustCoal", "dustGlowstone"),
+                        new RecipeItem(new ItemStack(ModItems.darkmatter, 6))),
                 11930f);
     }
 
@@ -170,13 +171,13 @@ public class AssemblerRecipes {
             case 2:
                 return new RecipeItem(new ItemStack(Items.FLINT, 4));
             case 3:
-                return new RecipeItem(new ItemStack(Items.DIAMOND, 1));
+                new RecipeOreDictPriority(1, "gearDiamond", "gemDiamond");
             case 4:
-                return new RecipeItem(new ItemStack(Items.DIAMOND, 2));
+                new RecipeOreDictPriority(2, "gearDiamond", "gemDiamond");
             case 5:
-                return new RecipeItem(new ItemStack(Items.DIAMOND, 4));
+                new RecipeOreDictPriority(4, "gearDiamond", "gemDiamond");
             case 6:
-                return new RecipeItem(new ItemStack(Items.DIAMOND, 8));
+                new RecipeOreDictPriority(8, "gearDiamond", "gemDiamond");
             default:
                 return new RecipeItem(new ItemStack(Items.FLINT));
         }
@@ -186,7 +187,7 @@ public class AssemblerRecipes {
     private static RecipeObject getCircuitItem(int tier) {
         if (tier >= 1 && tier <= 6)
             return new RecipeItem(new ItemStack(ModItems.circuit, 1, tier - 1));
-        return null;
+        return new RecipeItem(new ItemStack(Blocks.WOODEN_SLAB, 1, OreDictionary.WILDCARD_VALUE));
     }
 
     private static RecipeObject getGlassItem(int tier) {

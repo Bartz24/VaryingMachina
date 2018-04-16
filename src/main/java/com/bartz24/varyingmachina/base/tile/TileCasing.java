@@ -1,6 +1,7 @@
 package com.bartz24.varyingmachina.base.tile;
 
 import com.bartz24.varyingmachina.base.inventory.ItemHandlerNamed;
+import com.bartz24.varyingmachina.base.inventory.SidedFluidInventory;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.item.ItemModule;
 import com.bartz24.varyingmachina.base.machine.FuelType;
@@ -24,7 +25,9 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class TileCasing extends TileGenericPower implements ITickable {
 
-	private FluidTankFiltered tank;
+	public SidedFluidInventory inputFluids;
+	public SidedFluidInventory outputFluids;
+
 	private MachineVariant casingVariant;
 	public ItemStack machineStored = ItemStack.EMPTY;
 
@@ -35,7 +38,8 @@ public class TileCasing extends TileGenericPower implements ITickable {
 
 	public TileCasing() {
 		super("casing", 0, 0, 0);
-		tank = new FluidTankFiltered(0, null);
+		inputFluids = new SidedFluidInventory(0);
+		outputFluids = new SidedFluidInventory(0);
 		modules = new ItemStackHandler(6);
 	}
 
@@ -46,7 +50,8 @@ public class TileCasing extends TileGenericPower implements ITickable {
 			machineStored = new ItemStack(stackTag);
 		machineData = compound.getCompoundTag("MachineData");
 		casingVariant = MachineVariant.readFromNBT(compound);
-		tank.readFromNBT(compound.getCompoundTag("tank"));
+		inputFluids.readFromNBT(compound.getCompoundTag("inputFluids"));
+		outputFluids.readFromNBT(compound.getCompoundTag("outputFluids"));
 		modules.deserializeNBT(compound.getCompoundTag("modules"));
 		NBTTagList list = compound.getTagList("moduleData", 10);
 		for (int i = 0; i < 6; i++)
@@ -62,7 +67,8 @@ public class TileCasing extends TileGenericPower implements ITickable {
 		compound.setTag("Machine", stackTag);
 		compound.setTag("MachineData", machineData);
 		compound.setString("variant", casingVariant == null ? "null" : casingVariant.getRegistryName().toString());
-		compound.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
+		compound.setTag("inputFluids", inputFluids.writeToNBT(new NBTTagCompound()));
+		compound.setTag("outputFluids", outputFluids.writeToNBT(new NBTTagCompound()));
 		compound.setTag("modules", modules.serializeNBT());
 		NBTTagList list = new NBTTagList();
 		for (NBTTagCompound tag : moduleData)
@@ -117,10 +123,6 @@ public class TileCasing extends TileGenericPower implements ITickable {
 		super.dropInventory();
 	}
 
-	public FluidTankFiltered getTank() {
-		return tank;
-	}
-
 	@Override
 	public void update() {
 		if (!machineStored.isEmpty()) {
@@ -172,9 +174,12 @@ public class TileCasing extends TileGenericPower implements ITickable {
 				});
 				changed = true;
 			}
-			if (fuelInfo.type == FuelType.FLUID && tank.getFilter() == null) {
-				this.tank = new FluidTankFiltered(getMachine().getFluid(machineStored), 0,
-						getMachine().getMaxFluid(machineStored), getMachine().getFluid(machineStored));
+			if (this.inputFluids.getSize() == 0 && getMachine().getInputFluids(machineStored).length > 0) {
+				this.inputFluids = new SidedFluidInventory(getMachine().getInputFluids(machineStored), getMachine().getMaxInputFluids(machineStored));
+				changed = true;
+			}
+			if (this.outputFluids.getSize() == 0 && getMachine().getOutputFluids(machineStored).length > 0) {
+				this.outputFluids = new SidedFluidInventory(getMachine().getOutputFluids(machineStored), getMachine().getMaxOutputFluids(machineStored));
 				changed = true;
 			}
 		} else {
@@ -192,8 +197,12 @@ public class TileCasing extends TileGenericPower implements ITickable {
 				setOutputInventory(new ItemHandlerNamed(0));
 				changed = true;
 			}
-			if (tank.getFluid() != null) {
-				tank = new FluidTankFiltered(0, null);
+			if (inputFluids.getSize() > 0) {
+				inputFluids = new SidedFluidInventory(0);
+				changed = true;
+			}
+			if (outputFluids.getSize() > 0) {
+				outputFluids = new SidedFluidInventory(0);
 				changed = true;
 			}
 		}
@@ -204,7 +213,7 @@ public class TileCasing extends TileGenericPower implements ITickable {
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		if (facing == null || (!modules.getStackInSlot(facing.getIndex()).isEmpty()
-				&& getModule(facing).hasCapability(this, capability))) {
+				&& getModule(facing).hasCapability(this, capability, facing))) {
 			if (capability == CapabilityEnergy.ENERGY) {
 				return machineStored.isEmpty() ? false : (getMachine().getMaxEnergy(machineStored) != 0);
 			} else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -212,7 +221,9 @@ public class TileCasing extends TileGenericPower implements ITickable {
 						: (getMachine().getInputItemSlots(machineStored) != 0
 								|| getMachine().getOutputItemSlots(machineStored) != 0);
 			} else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-				return machineStored.isEmpty() ? false : getMachine().getFluid(machineStored) != null;
+				return machineStored.isEmpty() ? false
+						: (getMachine().getInputFluids(machineStored).length!= 0
+						|| getMachine().getOutputFluids(machineStored).length != 0);
 			}
 		}
 		return false;
@@ -222,12 +233,9 @@ public class TileCasing extends TileGenericPower implements ITickable {
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 
 		if (facing == null) {
-			if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-				return (T) tank;
-			else
 				return super.getCapability(capability, facing);
 		}
 
-		return getModule(facing).getCapability(this, capability);
+		return getModule(facing).getCapability(this, capability, facing);
 	}
 }

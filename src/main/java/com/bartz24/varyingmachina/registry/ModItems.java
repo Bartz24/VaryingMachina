@@ -2,10 +2,7 @@ package com.bartz24.varyingmachina.registry;
 
 import com.bartz24.varyingmachina.References;
 import com.bartz24.varyingmachina.base.item.*;
-import com.bartz24.varyingmachina.machines.MachineAssembler;
-import com.bartz24.varyingmachina.machines.MachineGrinder;
-import com.bartz24.varyingmachina.machines.MachinePresser;
-import com.bartz24.varyingmachina.machines.MachineSmelter;
+import com.bartz24.varyingmachina.machines.*;
 import com.bartz24.varyingmachina.modules.ModuleBellow;
 import com.bartz24.varyingmachina.modules.ModuleGearbox;
 import com.bartz24.varyingmachina.modules.ModuleInserter;
@@ -34,6 +31,8 @@ public class ModItems {
     public static Item presser;
     @ObjectHolder("assembler")
     public static Item assembler;
+    @ObjectHolder("mixer")
+    public static Item mixer;
 
     @ObjectHolder("regulator")
     public static Item regulator;
@@ -58,6 +57,8 @@ public class ModItems {
                 .registerItemMachineType(new MachineItemBuilder(MachinePresser.class, References.ModID, "presser"));
         MachineRegistry
                 .registerItemMachineType(new MachineItemBuilder(MachineAssembler.class, References.ModID, "assembler"));
+        MachineRegistry
+                .registerItemMachineType(new MachineItemBuilder(MachineMixer.class, References.ModID, "mixer"));
 
         MachineRegistry
                 .registerItemModuleType(new ModuleItemBuilder(ModuleRegulator.class, References.ModID, "regulator"));

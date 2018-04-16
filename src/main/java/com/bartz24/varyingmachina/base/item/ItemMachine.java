@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.bartz24.varyingmachina.RandomHelper;
 import com.bartz24.varyingmachina.References;
 import com.bartz24.varyingmachina.base.block.BlockCasing;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
@@ -21,7 +22,9 @@ import com.bartz24.varyingmachina.base.machine.MachineVariant;
 import com.bartz24.varyingmachina.base.machine.MachineVariant.FuelInfo;
 import com.bartz24.varyingmachina.base.models.MachineModelLoader;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
+import com.bartz24.varyingmachina.base.tile.FluidTankFiltered;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
+import com.bartz24.varyingmachina.machines.MachineMixer;
 import com.bartz24.varyingmachina.registry.MachineRegistry;
 
 import net.minecraft.client.Minecraft;
@@ -158,8 +161,9 @@ public class ItemMachine extends ItemBase {
             FuelInfo fuelInfo = MachineVariant.readFromNBT(casing.machineStored.getTagCompound()).getFuel();
             switch (fuelInfo.type) {
                 case FLUID:
-                    gui.guiComponents.add(new GuiFluidTank(7, 33, casing.getTank().getCapacity(),
-                            casing.getTank().getFluidAmount(), casing.getTank().getFluid()));
+                    FluidTankFiltered tank = casing.inputFluids.getTankInSlot(0);
+                    gui.guiComponents.add(new GuiFluidTank(7, 33, tank.getCapacity(), tank.getFluidAmount(),
+                            tank.getFluid()));
                     break;
                 case FURNACE:
                     gui.guiComponents.add(new GuiFuel(9, 37, (int) maxHU, (int) itemHU));
@@ -186,8 +190,9 @@ public class ItemMachine extends ItemBase {
             FuelInfo fuelInfo = MachineVariant.readFromNBT(casing.machineStored.getTagCompound()).getFuel();
             switch (fuelInfo.type) {
                 case FLUID:
-                    gui.guiComponents.get(0).updateData(casing.getTank().getCapacity(), casing.getTank().getFluidAmount(),
-                            casing.getTank().getFluid());
+                    FluidTankFiltered tank = casing.inputFluids.getTankInSlot(0);
+                    gui.guiComponents.get(0).updateData(tank.getCapacity(), tank.getFluidAmount(),
+                            tank.getFluid());
                     break;
                 case FURNACE:
                     gui.guiComponents.get(0).updateData((int) maxHU, (int) itemHU);
@@ -280,15 +285,28 @@ public class ItemMachine extends ItemBase {
     }
 
     // Fluid Handler
-    public Fluid getFluid(ItemStack stack) {
+    public Fluid[] getInputFluids(ItemStack stack) {
+        List<Fluid> fluids = new ArrayList();
         FuelType type = MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().type;
-        return (requiresFuel(stack) && type == FuelType.FLUID)
-                ? MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().getFluid() : null;
+        if (requiresFuel(stack) && type == FuelType.FLUID)
+            fluids.add(MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().getFluid());
+        return fluids.toArray(new Fluid[fluids.size()]);
     }
 
-    public int getMaxFluid(ItemStack stack) {
+    public int[] getMaxInputFluids(ItemStack stack) {
+        List<Integer> amounts = new ArrayList();
         FuelType type = MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().type;
-        return (requiresFuel(stack) && type == FuelType.FLUID) ? type.defaultMaxFluid() : 0;
+        if (requiresFuel(stack) && type == FuelType.FLUID)
+            amounts.add(type.defaultMaxFluid());
+        return RandomHelper.toIntArray(amounts);
+    }
+
+    public Fluid[] getOutputFluids(ItemStack stack) {
+        return new Fluid[0];
+    }
+
+    public int[] getMaxOutputFluids(ItemStack stack) {
+        return new int[0];
     }
 
     // Heat Source
@@ -340,10 +358,15 @@ public class ItemMachine extends ItemBase {
     public float getCombinedStat(MachineStat stat, ItemStack stack, World world, BlockPos pos) {
         boolean casingHasStat = Arrays.asList(BlockCasing.stats).contains(stat);
         boolean machineHasStat = Arrays.asList(stats).contains(stat);
+        boolean combinedHasStat = Arrays.asList(getCombinedStats()).contains(stat);
         TileCasing casing = getCasingTile(world, pos);
         float value = 0;
-        if (!casingHasStat && !machineHasStat)
+
+        if (!combinedHasStat) {
+            if(stat == MachineStat.MAXHU)
+            return 1000;
             value = 0;
+        }
         else if (casingHasStat && !machineHasStat)
             value = (float) casing.getVariant().getStat(stat);
         else if (!casingHasStat && machineHasStat)

@@ -43,6 +43,7 @@ public class ModuleRemover extends ModuleTransfer {
 									&& maxInsert - attempt.getCount() > 0) {
 								ItemHandlerHelper.insertItemStacked(handler, casing.getOutputInventory().extractItem(i,
 										maxInsert - attempt.getCount(), false), false);
+								casing.markDirtyBlockUpdate();
 								break;
 							}
 						}
@@ -53,27 +54,30 @@ public class ModuleRemover extends ModuleTransfer {
 							CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 					if (handler != null) {
 						int maxExtract = (int) getStat(variant, MachineStat.SIZE) * 100;
-						casing.getTank().drain(handler.fill(casing.getTank().drain(maxExtract, false), true), true);
+						getCapability(casing, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, installedSide).drain(handler.fill(getCapability(casing, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, installedSide).drain(maxExtract, false), true), true);
+						casing.markDirtyBlockUpdate();
 					}
 				}
 			}
 		}
 	}
 
-	public boolean hasCapability(TileCasing casing, Capability<?> capability) {
+	public boolean hasCapability(TileCasing casing, Capability<?> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return casing.getMachine().getOutputItemSlots(casing.machineStored) > 0;
 		return false;
 	}
 
-	public <T> T getCapability(TileCasing casing, Capability<T> capability) {
+	public <T> T getCapability(TileCasing casing, Capability<T> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T) casing.getOutputInventory();
-		else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return (T) null;
+		else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			int fluidFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("fluidFilter");
+			return fluidFilter == -1 ? (T) casing.outputFluids : (T) casing.outputFluids.getTankInSlot(fluidFilter);
+		}
 		else if (capability == CapabilityEnergy.ENERGY)
 			return (T) casing.energyStorage;
-		return super.getCapability(casing, capability);
+		return super.getCapability(casing, capability, installedSide);
 	}
 
 	public void onAddToCasing(TileCasing casing, EnumFacing installedSide) {

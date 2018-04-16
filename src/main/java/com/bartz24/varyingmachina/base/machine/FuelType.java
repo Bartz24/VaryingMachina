@@ -42,8 +42,8 @@ public enum FuelType {
 			data.setFloat("itemHU", fuelData.fuelTimePercent * fuelData.huPerTick);
 			data.setFloat("huTick", fuelData.huPerTick);
 			fuelStack.shrink(1);
-		} else if (variant.getFuel().type == FLUID && isValidFuel(tile.machineStored, tile.getTank().getFluid())
-				&& tile.getTank().drainInternal(1, false) != null && tile.getTank().drainInternal(1, true).amount > 0) {
+		} else if (variant.getFuel().type == FLUID && isValidFuel(tile.machineStored, tile.inputFluids.getTankInSlot(0).getFluid())
+				&& tile.inputFluids.getTankInSlot(0).drainInternal(1, false) != null && tile.inputFluids.getTankInSlot(0).drainInternal(1, true).amount > 0) {
 			data.setFloat("itemHU", fuelData.fuelTimePercent * fuelData.huPerTick);
 			data.setFloat("huTick", fuelData.huPerTick);
 		} else if (variant.getFuel().type == FURNACE && isValidFuel(tile.machineStored, fuelStack)) {

@@ -3,7 +3,8 @@
     "textures": {
         "particle": "#part",
         "all": "stone",
-        "part": "stone"
+        "part": "stone",
+        "top": "#all"
     },
     "elements": [
         {   "from": [ 2, 2, 2 ],
@@ -23,7 +24,8 @@
                 "north": { "texture": "#part" },
                 "south": { "texture": "#part" },
                 "west":  { "texture": "#part" },
-                "east":  { "texture": "#part" }
+                "east":  { "texture": "#part" },
+                "up":    { "texture": "#top" }
             }
         }
     ],

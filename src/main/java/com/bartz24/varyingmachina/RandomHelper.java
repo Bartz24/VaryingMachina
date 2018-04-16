@@ -3,6 +3,7 @@ package com.bartz24.varyingmachina;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -259,7 +260,6 @@ public class RandomHelper {
 				}
 			}
 		}
-		System.out.println("HERE");
 		return stack;
 
 	}
@@ -368,10 +368,7 @@ public class RandomHelper {
 	}
 
 	public static int[] toIntArray(List<Integer> list) {
-		int[] ret = new int[list.size()];
-		for (int i = 0; i < ret.length; i++)
-			ret[i] = list.get(i);
-		return ret;
+		return ArrayUtils.toPrimitive(list.toArray(new Integer[list.size()]));
 	}
 
 	public static List<Integer> toIntList(int[] array) {

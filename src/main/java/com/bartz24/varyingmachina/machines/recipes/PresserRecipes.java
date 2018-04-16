@@ -40,7 +40,7 @@ public class PresserRecipes {
 
 			if (ore.startsWith("plate")) {
 				for (String ingot : OreDictionary.getOreNames()) {
-					if (ingot.equals("ingot" + ore.substring(5, ore.length())))
+					if (!ore.substring(5, ore.length()).equals("Aluminum") && ingot.equals("ingot" + ore.substring(5, ore.length())))
 						presserRecipes.addRecipe(
 								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 1)),
 										Collections.singletonList(new RecipeOreDict(ingot, 1)), "presser",
@@ -64,7 +64,7 @@ public class PresserRecipes {
 
 			if (ore.startsWith("rod")) {
 				for (String ingot : OreDictionary.getOreNames()) {
-					if (ingot.equals("ingot" + ore.substring(3, ore.length())))
+					if (!ore.substring(3, ore.length()).equals("Aluminum") && ingot.equals("ingot" + ore.substring(3, ore.length())))
 						presserRecipes.addRecipe(
 								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 2)),
 										Collections.singletonList(new RecipeOreDict(ingot, 1)), "presser",
@@ -87,7 +87,7 @@ public class PresserRecipes {
 			}
 			if (ore.startsWith("gear")) {
 				for (String ingot : OreDictionary.getOreNames()) {
-					if (ingot.equals("ingot" + ore.substring(4, ore.length())))
+					if (!ore.substring(4, ore.length()).equals("Aluminum") && ingot.equals("ingot" + ore.substring(4, ore.length())))
 						presserRecipes.addRecipe(
 								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 1)),
 										Collections.singletonList(new RecipeOreDict(ingot, 4)), "presser",
@@ -106,6 +106,29 @@ public class PresserRecipes {
 								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 1)),
 										Collections.singletonList(new RecipeOreDict(crystal, 4)), "presser",
 										PresserPattern.getDefaultGearPattern(), 1440, 1200));
+				}
+			}
+			if (ore.startsWith("wire")) {
+				for (String ingot : OreDictionary.getOreNames()) {
+					if (!ore.substring(4, ore.length()).equals("Aluminum") && ingot.equals("ingot" + ore.substring(4, ore.length())))
+						presserRecipes.addRecipe(
+								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 3)),
+										Collections.singletonList(new RecipeOreDict(ingot, 1)), "presser",
+										PresserPattern.getDefaultWirePattern(), 680, 480));
+				}
+				for (String gem : OreDictionary.getOreNames()) {
+					if (gem.equals("gem" + ore.substring(4, ore.length())))
+						presserRecipes.addRecipe(
+								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 3)),
+										Collections.singletonList(new RecipeOreDict(gem, 1)), "presser",
+										PresserPattern.getDefaultWirePattern(), 680, 480));
+				}
+				for (String crystal : OreDictionary.getOreNames()) {
+					if (crystal.equals("crystal" + ore.substring(4, ore.length())))
+						presserRecipes.addRecipe(
+								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 3)),
+										Collections.singletonList(new RecipeOreDict(crystal, 1)), "presser",
+										PresserPattern.getDefaultWirePattern(), 680, 480));
 				}
 			}
 		}

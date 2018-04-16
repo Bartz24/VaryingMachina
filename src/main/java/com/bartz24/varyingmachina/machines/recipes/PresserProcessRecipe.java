@@ -18,6 +18,10 @@ public class PresserProcessRecipe extends ProcessRecipe {
 			return new PresserPattern(new int[][] { { 1 }, { 1 }, { 1 }, { 1 } });
 		}
 
+		public static PresserPattern getDefaultWirePattern() {
+			return new PresserPattern(new int[][] { { 1, 1, 1, 1 } });
+		}
+
 		public static PresserPattern getDefaultGearPattern() {
 			return new PresserPattern(new int[][] { { 1, 0, 1, 0, 1 }, { 0, 1, 1, 1, 0 }, { 1, 1, 0, 1, 1 },
 					{ 0, 1, 1, 1, 0 }, { 1, 0, 1, 0, 1 } });

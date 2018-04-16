@@ -63,7 +63,7 @@ public class MachineGrinder extends ItemMachine {
 
 			ItemStack input = getCasingTile(world, pos).getInputInventory().getStackInSlot(0);
 
-			if (hasRecipes(world, pos, machineStack) && canOutput(world, pos, machineStack, data)) {
+			if (hasRecipes(world, pos, machineStack) && canOutput(world, pos, machineStack, data) && curHU > 0) {
 				data.setBoolean("running", true);
 				time++;
 				curHU -= getHUDrain(world, pos, machineStack);
