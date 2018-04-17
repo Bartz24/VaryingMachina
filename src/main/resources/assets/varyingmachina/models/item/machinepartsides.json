@@ -1,9 +1,9 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "particle": "#part",
         "all": "stone",
-        "part": "stone",
+        "part": "#all",
+        "particle": "#all",
         "top": "#all"
     },
     "elements": [

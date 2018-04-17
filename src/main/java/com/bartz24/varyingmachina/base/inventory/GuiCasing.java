@@ -37,7 +37,7 @@ public class GuiCasing extends GuiBase {
 			guiComponents.clear();
 			tile.getMachine().initGui(this, buttonList, tile);
 		}
-		moduleButton = addButton(new GuiGoodButton(0, this.guiLeft + 154, this.guiTop + 40, 12, 12, "",
+		moduleButton = addButton(new GuiGoodButton(0, this.guiLeft + xSize - 22, this.guiTop + 40, 12, 12, "",
 				new ResourceLocation(References.ModID, "textures/gui/guiicons.png"), 59, 78));
 	}
 
@@ -71,12 +71,11 @@ public class GuiCasing extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		this.fontRenderer.drawString(
 				MachineVariant.writeVariantToStack(new ItemStack(ModBlocks.casing), tile.getVariant()).getDisplayName(),
 				8, 3, 4210752);
 		this.fontRenderer.drawString(tile.machineStored.getDisplayName(), 8, 11, 4210752);
-		this.fontRenderer.drawString(this.player.inventory.getDisplayName().getUnformattedText(), 8,
+		this.fontRenderer.drawString(this.player.inventory.getDisplayName().getUnformattedText(), 8 + (tile.machineStored.isEmpty() ? 0 : tile.getMachine().getInvPos(tile.machineStored)[0]),
 				72 + (tile.machineStored.isEmpty() ? 0 : tile.getMachine().getInvPos(tile.machineStored)[1]), 4210752);
 		if (!tile.machineStored.isEmpty())
 			tile.getMachine().drawForegroundGui(tile, this, fontRenderer, mouseX, mouseY);

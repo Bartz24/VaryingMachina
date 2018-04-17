@@ -60,6 +60,16 @@ public class AssemblerRecipes {
                     Arrays.asList(variant.getPlateRecipeItem(18),
                             getGlassItem(variant.getMachineTier()), getCircuitItem(variant.getMachineTier())),
                     (float) (312f * Math.pow(tierRate, variant.getMachineTier())));
+            assemblerRecipes.addRecipe(
+                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.combustion), variant)),
+                    Arrays.asList(variant.getPlateRecipeItem(22),
+                            getHeatItem(variant.getMachineTier()), getSuperHeatItem(variant.getMachineTier()), getCircuitItem(variant.getMachineTier())),
+                    (float) (418f * Math.pow(tierRate, variant.getMachineTier())));
+            assemblerRecipes.addRecipe(
+                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.itembuffer), variant)),
+                    Arrays.asList(variant.getPlateRecipeItem(8),
+                            new RecipeItem(new ItemStack(Blocks.CHEST)), getCircuitItem(variant.getMachineTier())),
+                    (float) (176f * Math.pow(tierRate, variant.getMachineTier())));
 
             assemblerRecipes.addRecipe(
                     new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.regulator), variant)),
@@ -90,6 +100,20 @@ public class AssemblerRecipes {
                     Arrays.asList(variant.getPlateRecipeItem(4),
                             variant.getGearRecipeItem(1)),
                     (float) (110f * Math.pow(tierRate, variant.getMachineTier())));
+
+            assemblerRecipes.addRecipe(
+                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.worldinserter), variant)),
+                    Arrays.asList(variant.getPlateRecipeItem(4),
+                            new RecipeItem(new ItemStack(Blocks.HOPPER)),
+                            new RecipeItem(new ItemStack(Items.ENDER_EYE, 2))),
+                    (float) (180f * Math.pow(tierRate, variant.getMachineTier())));
+
+            assemblerRecipes.addRecipe(
+                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.worldremover), variant)),
+                    Arrays.asList(variant.getPlateRecipeItem(4),
+                            new RecipeItem(new ItemStack(Blocks.DROPPER)),
+                    new RecipeItem(new ItemStack(Items.ENDER_EYE, 2))),
+                    (float) (180f * Math.pow(tierRate, variant.getMachineTier())));
         }
 
 
@@ -121,7 +145,7 @@ public class AssemblerRecipes {
                 Arrays.asList(getCircuitItem(3),
                         new RecipeListOreDict(4, "plateSoularium", "plateManyullyn", "plateTitanium", "platePlatinum"),
                         new RecipeItem(new ItemStack(Items.GLOWSTONE_DUST, 12)),
-                        new RecipeListOreDict(6, "wireSignalum", "wireElectrum", "wireCobalt", "wirePulsatingIron", "wireDiamond")),
+                        new RecipeListOreDict(6, "wireSignalum", "wireCobalt", "wirePulsatingIron", "wireDiamond")),
                 1610f);
 
         assemblerRecipes.addRecipe(
@@ -152,13 +176,34 @@ public class AssemblerRecipes {
             case 3:
                 return new RecipeItem(new ItemStack(Blocks.REDSTONE_BLOCK));
             case 4:
-                return new RecipeItem(new ItemStack(Blocks.MAGMA, 4));
+                return new RecipeItem(new ItemStack(Blocks.MAGMA));
             case 5:
                 return new RecipeOreDictPriority(2, "dustPyrotheum", "obsidian");
             case 6:
                 return new RecipeOreDictPriority(6, "dustPyrotheum", "obsidian");
             default:
                 return new RecipeItem(new ItemStack(Items.GUNPOWDER));
+        }
+    }
+
+    private static RecipeObject getSuperHeatItem(int tier) {
+        switch (tier) {
+            case 0:
+                return new RecipeItem(new ItemStack(Items.COAL, 1, 1));
+            case 1:
+                return new RecipeItem(new ItemStack(Items.COAL, 2, 1));
+            case 2:
+                return new RecipeItem(new ItemStack(Items.GLOWSTONE_DUST));
+            case 3:
+                return new RecipeOreDictPriority(2, "dustCharcoal", "dustCoal");
+            case 4:
+                return new RecipeItem(new ItemStack(Blocks.OBSIDIAN));
+            case 5:
+                return new RecipeOreDictPriority(2, "dustCoke", "dustObsidian");
+            case 6:
+                return new RecipeOreDictPriority(4, "dustPetrotheum", "dustObsidian");
+            default:
+                return new RecipeItem(new ItemStack(Items.COAL, 1, 1));
         }
     }
 
@@ -171,13 +216,13 @@ public class AssemblerRecipes {
             case 2:
                 return new RecipeItem(new ItemStack(Items.FLINT, 4));
             case 3:
-                new RecipeOreDictPriority(1, "gearDiamond", "gemDiamond");
+                return new RecipeOreDictPriority(1, "gearDiamond", "gemDiamond");
             case 4:
-                new RecipeOreDictPriority(2, "gearDiamond", "gemDiamond");
+                return new RecipeOreDictPriority(2, "gearDiamond", "gemDiamond");
             case 5:
-                new RecipeOreDictPriority(4, "gearDiamond", "gemDiamond");
+                return new RecipeOreDictPriority(4, "gearDiamond", "gemDiamond");
             case 6:
-                new RecipeOreDictPriority(8, "gearDiamond", "gemDiamond");
+                return new RecipeOreDictPriority(8, "gearDiamond", "gemDiamond");
             default:
                 return new RecipeItem(new ItemStack(Items.FLINT));
         }

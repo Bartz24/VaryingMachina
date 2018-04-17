@@ -38,11 +38,11 @@ public class ModuleInserter extends ModuleTransfer {
 						if (itemFilter == -1) {
 							for (int i = 0; i < handler.getSlots(); i++) {
 								ItemStack extracted = handler.extractItem(i, maxExtract, true);
-								ItemStack attempt = ItemHandlerHelper.insertItemStacked(casing.getInputInventory(),
+								ItemStack attempt = ItemHandlerHelper.insertItemStacked(casing.getMachine().getInputInventory(casing),
 										extracted, true);
 								if (!handler.getStackInSlot(i).isEmpty() && !extracted.isEmpty()
 										&& maxExtract - attempt.getCount() > 0) {
-									ItemHandlerHelper.insertItemStacked(casing.getInputInventory(),
+									ItemHandlerHelper.insertItemStacked(casing.getMachine().getInputInventory(casing),
 											handler.extractItem(i, maxExtract - attempt.getCount(), false), false);
 									casing.markDirtyBlockUpdate();
 									break;
@@ -51,10 +51,10 @@ public class ModuleInserter extends ModuleTransfer {
 						} else {
 							for (int i = 0; i < handler.getSlots(); i++) {
 								ItemStack extracted = handler.extractItem(i, maxExtract, true);
-								ItemStack attempt = casing.getInputInventory().insertItem(itemFilter, extracted, true);
+								ItemStack attempt = casing.getMachine().getInputInventory(casing).insertItem(itemFilter, extracted, true);
 								if (!handler.getStackInSlot(i).isEmpty() && !extracted.isEmpty()
 										&& maxExtract - attempt.getCount() > 0) {
-									casing.getInputInventory().insertItem(itemFilter,
+                                    casing.getMachine().getInputInventory(casing).insertItem(itemFilter,
 											handler.extractItem(i, maxExtract - attempt.getCount(), false), false);
 									casing.markDirtyBlockUpdate();
 									break;
@@ -77,13 +77,13 @@ public class ModuleInserter extends ModuleTransfer {
 
 	public boolean hasCapability(TileCasing casing, Capability<?> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return casing.getMachine().getInputItemSlots(casing.machineStored) > 0;
+			return casing.getMachine().getInputItemSlots(casing) > 0;
 		return super.hasCapability(casing, capability, installedSide);
 	}
 
 	public <T> T getCapability(TileCasing casing, Capability<T> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T) casing.getInputInventory();
+			return (T) casing.getMachine().getInputInventory(casing);
 		else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			int fluidFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("fluidFilter");
 			return fluidFilter == -1 ? (T) casing.inputFluids : (T) casing.inputFluids.getTankInSlot(fluidFilter);

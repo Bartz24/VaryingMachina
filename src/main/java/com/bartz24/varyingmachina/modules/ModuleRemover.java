@@ -34,14 +34,14 @@ public class ModuleRemover extends ModuleTransfer {
 							CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 					if (handler != null) {
 						int maxInsert = (int) getStat(variant, MachineStat.SIZE);
-						for (int i = 0; i < casing.getOutputInventory().getSlots(); i++) {
+						for (int i = 0; i < casing.getMachine().getOutputInventory(casing).getSlots(); i++) {
 							if (itemFilter >= 0 && itemFilter != i)
 								continue;
-							ItemStack extracted = casing.getOutputInventory().extractItem(i, maxInsert, true);
+							ItemStack extracted = casing.getMachine().getOutputInventory(casing).extractItem(i, maxInsert, true);
 							ItemStack attempt = ItemHandlerHelper.insertItemStacked(handler, extracted, true);
-							if (!casing.getOutputInventory().getStackInSlot(i).isEmpty() && !extracted.isEmpty()
+							if (!casing.getMachine().getOutputInventory(casing).getStackInSlot(i).isEmpty() && !extracted.isEmpty()
 									&& maxInsert - attempt.getCount() > 0) {
-								ItemHandlerHelper.insertItemStacked(handler, casing.getOutputInventory().extractItem(i,
+								ItemHandlerHelper.insertItemStacked(handler, casing.getMachine().getOutputInventory(casing).extractItem(i,
 										maxInsert - attempt.getCount(), false), false);
 								casing.markDirtyBlockUpdate();
 								break;
@@ -64,13 +64,13 @@ public class ModuleRemover extends ModuleTransfer {
 
 	public boolean hasCapability(TileCasing casing, Capability<?> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return casing.getMachine().getOutputItemSlots(casing.machineStored) > 0;
+			return casing.getMachine().getOutputItemSlots(casing) > 0;
 		return false;
 	}
 
 	public <T> T getCapability(TileCasing casing, Capability<T> capability, EnumFacing installedSide) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T) casing.getOutputInventory();
+			return (T) casing.getMachine().getOutputInventory(casing);
 		else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			int fluidFilter = casing.moduleData.get(installedSide.getIndex()).getInteger("fluidFilter");
 			return fluidFilter == -1 ? (T) casing.outputFluids : (T) casing.outputFluids.getTankInSlot(fluidFilter);

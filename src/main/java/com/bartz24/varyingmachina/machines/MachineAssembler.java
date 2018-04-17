@@ -3,7 +3,6 @@ package com.bartz24.varyingmachina.machines;
 import com.bartz24.varyingmachina.ItemHelper;
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiHeatBar;
 import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
@@ -12,10 +11,8 @@ import com.bartz24.varyingmachina.base.recipe.RecipeItem;
 import com.bartz24.varyingmachina.base.recipe.RecipeObject;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
 import com.bartz24.varyingmachina.machines.recipes.AssemblerRecipes;
-import com.bartz24.varyingmachina.machines.recipes.SmelterRecipes;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -23,7 +20,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MachineAssembler extends ItemMachine {
@@ -32,40 +28,13 @@ public class MachineAssembler extends ItemMachine {
         super("assembler", MachineStat.SPEED, MachineStat.EFFICIENCY);
     }
 
-    public void update(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {
-        assemble(world, pos, machineStack, data);
+    public ProcessRecipe getRecipe(World world, BlockPos pos, ItemStack machineStack) {
+        return AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(world, pos), false, false, Integer.MAX_VALUE);
     }
 
-    void assemble(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {
-        if (!world.isRemote) {
-            boolean changedValue = false;
-            heatUp(machineStack, world, pos, data);
-            int time = data.getInteger("time");
-            float curHU = data.getFloat("curHU");
-
-            ProcessRecipe recipe = AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(world, pos), false, false, Integer.MAX_VALUE);
-            if (recipe != null && getCasingTile(world, pos).getOutputInventory()
-                    .insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty() && curHU > 0) {
-                data.setBoolean("running", true);
-                time++;
-                curHU -= getHUDrain(world, pos, machineStack);
-                if (time >= getTimeToProcess(world, pos, getCasingTile(world, pos).machineStored, recipe)) {
-                    getCasingTile(world, pos).getOutputInventory().insertItem(0, recipe.getItemOutputs().get(0), false);
-                    shrinkInputs(recipe.getItemInputs(), world, pos);
-                    time = 0;
-                }
-                changedValue = true;
-            } else if (time != 0) {
-                time = 0;
-                data.setBoolean("running", false);
-                changedValue = true;
-            }
-            if (changedValue) {
-                getCasingTile(world, pos).markDirty();
-                data.setInteger("time", time);
-                data.setFloat("curHU", curHU);
-            }
-        }
+    public void processFinish(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
+        getOutputInventory(getCasingTile(world, pos)).insertItem(0, recipe.getItemOutputs().get(0), false);
+        shrinkInputs(recipe.getItemInputs(), world, pos);
     }
 
     private void shrinkInputs(List<List<ItemStack>> inputs, World world, BlockPos pos) {
@@ -73,8 +42,8 @@ public class MachineAssembler extends ItemMachine {
             for (List<ItemStack> input : inputs) {
                 boolean success = false;
                 for (ItemStack s : input) {
-                    if (!s.isEmpty() && ItemHelper.itemStacksEqualOD(s, getCasingTile(world, pos).getInputInventory().getStackInSlot(i))) {
-                        getCasingTile(world, pos).getInputInventory().getStackInSlot(i).shrink(s.getCount());
+                    if (!s.isEmpty() && ItemHelper.itemStacksEqualOD(s, getInputInventory(getCasingTile(world, pos)).getStackInSlot(i))) {
+                        getInputInventory(getCasingTile(world, pos)).getStackInSlot(i).shrink(s.getCount());
                         success = true;
                         break;
                     }
@@ -88,8 +57,8 @@ public class MachineAssembler extends ItemMachine {
     private List<RecipeObject> getInputs(World world, BlockPos pos) {
         List<RecipeObject> inputs = new ArrayList();
         for (int i = 0; i < 9; i++) {
-            if (!getCasingTile(world, pos).getInputInventory().getStackInSlot(i).isEmpty())
-                inputs.add(new RecipeItem(getCasingTile(world, pos).getInputInventory().getStackInSlot(i)));
+            if (!getInputInventory(getCasingTile(world, pos)).getStackInSlot(i).isEmpty())
+                inputs.add(new RecipeItem(getInputInventory(getCasingTile(world, pos)).getStackInSlot(i)));
         }
         return inputs;
     }
@@ -103,19 +72,19 @@ public class MachineAssembler extends ItemMachine {
         return true;
     }
 
-    public int getInputItemSlots(ItemStack stack) {
-        return 9 + super.getInputItemSlots(stack);
+    public int getInputItemSlots(TileCasing casing) {
+        return 9 + super.getInputItemSlots(casing);
     }
 
-    public int getOutputItemSlots(ItemStack stack) {
+    public int getOutputItemSlots(TileCasing casing) {
         return 1;
     }
 
-    public List<String> getInputItemNames(ItemStack stack) {
+    public List<String> getInputItemNames(TileCasing casing) {
         List<String> names = new ArrayList();
         for (int i = 1; i <= 9; i++)
             names.add("Input " + i);
-        names.addAll(super.getInputItemNames(stack));
+        names.addAll(super.getInputItemNames(casing));
         return names;
     }
 
@@ -128,8 +97,8 @@ public class MachineAssembler extends ItemMachine {
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 3; x++)
-                slots.add(new SlotItemHandler(tile.getInputInventory(), y * 3 + x, 34 + 18 * x, 20 + 18 * y));
-        slots.add(new SlotItemHandler(tile.getOutputInventory(), 0, 130, 38));
+                slots.add(new SlotItemHandler(getInputInventory(tile), y * 3 + x, 34 + 18 * x, 20 + 18 * y));
+        slots.add(new SlotItemHandler(getOutputInventory(tile), 0, 130, 38));
         return super.getSlots(tile, slots);
     }
 

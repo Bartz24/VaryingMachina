@@ -21,6 +21,8 @@ public class ModBlocks {
 	public static Block darkmatterblock;
 	@ObjectHolder("lightmatterblock")
 	public static Block lightmatterblock;
+	@ObjectHolder("frozenironblock")
+	public static Block frozenironblock;
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -28,5 +30,7 @@ public class ModBlocks {
 		event.getRegistry().register(new BlockBase("darkmatterblock", Material.IRON, MapColor.BLACK, 8, 16));
 		event.getRegistry().register(
 				new BlockBase("lightmatterblock", Material.IRON, MapColor.WHITE_STAINED_HARDENED_CLAY, 12, 8));
+		event.getRegistry().register(
+				new BlockBase("frozenironblock", Material.IRON, MapColor.DIAMOND, 5, 6));
 	}
 }

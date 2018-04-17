@@ -1,0 +1,8 @@
+{
+  "parent":"varyingmachina:item/machinepartsides",
+  "textures": {
+    "all":"varyingmachina:blocks/ironmachine",
+    "top":"varyingmachina:items/itembuffer",
+    "part":"varyingmachina:items/itembuffer"
+  }
+}

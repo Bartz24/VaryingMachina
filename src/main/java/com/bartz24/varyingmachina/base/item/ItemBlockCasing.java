@@ -35,6 +35,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemBlockCasing extends ItemBlock implements IItemBase {
 
@@ -78,6 +79,12 @@ public class ItemBlockCasing extends ItemBlock implements IItemBase {
 		});
 		ModelLoaderRegistry.registerLoader(loader);
 
+	}
+
+	@Override
+	public ItemBlockCasing registerOreDict(String name) {
+		OreDictionary.registerOre(name, this);
+		return this;
 	}
 
 	@Override

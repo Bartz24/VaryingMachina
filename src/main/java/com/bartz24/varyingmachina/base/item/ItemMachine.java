@@ -1,21 +1,9 @@
 package com.bartz24.varyingmachina.base.item;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import com.bartz24.varyingmachina.RandomHelper;
 import com.bartz24.varyingmachina.References;
 import com.bartz24.varyingmachina.base.block.BlockCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiFluidTank;
-import com.bartz24.varyingmachina.base.inventory.GuiFuel;
-import com.bartz24.varyingmachina.base.inventory.GuiRFBar;
+import com.bartz24.varyingmachina.base.inventory.*;
 import com.bartz24.varyingmachina.base.machine.FuelType;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
@@ -24,9 +12,7 @@ import com.bartz24.varyingmachina.base.models.MachineModelLoader;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
 import com.bartz24.varyingmachina.base.tile.FluidTankFiltered;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
-import com.bartz24.varyingmachina.machines.MachineMixer;
 import com.bartz24.varyingmachina.registry.MachineRegistry;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -48,7 +34,12 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.*;
 
 public class ItemMachine extends ItemBase {
 
@@ -140,7 +131,7 @@ public class ItemMachine extends ItemBase {
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
         FuelType type = MachineVariant.readFromNBT(tile.machineStored.getTagCompound()).getFuel().type;
         if (requiresFuel(tile.machineStored) && (type == FuelType.FURNACE || type == FuelType.ITEM))
-            slots.add(new SlotItemHandler(tile.getInputInventory(), getFuelSlotID(tile.machineStored), 8, 53));
+            slots.add(new SlotItemHandler(getInputInventory(tile), getFuelSlotID(tile), 8, 53));
         return slots;
     }
 
@@ -179,6 +170,7 @@ public class ItemMachine extends ItemBase {
                     break;
             }
         }
+        gui.guiComponents.add(new GuiStatsComp(155, 25, getCombinedStats(), casing));
     }
 
     @SideOnly(Side.CLIENT)
@@ -208,6 +200,7 @@ public class ItemMachine extends ItemBase {
                     break;
             }
         }
+        gui.guiComponents.get(1).updateData(getCombinedStats(), casing);
     }
 
     @SideOnly(Side.CLIENT)
@@ -239,8 +232,8 @@ public class ItemMachine extends ItemBase {
         return false;
     }
 
-    public int getFuelSlotID(ItemStack stack) {
-        return requiresFuel(stack) ? getInputItemSlots(stack) - 1 : 0;
+    public int getFuelSlotID(TileCasing casing) {
+        return requiresFuel(casing.machineStored) ? getInputItemSlots(casing) - 1 : 0;
     }
 
     // RF Handler
@@ -263,18 +256,18 @@ public class ItemMachine extends ItemBase {
     }
 
     // Item Handler
-    public int getInputItemSlots(ItemStack stack) {
-        FuelType type = MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().type;
+    public int getInputItemSlots(TileCasing casing) {
+        FuelType type = MachineVariant.readFromNBT(casing.machineStored.getTagCompound()).getFuel().type;
         return (type == FuelType.FURNACE || type == FuelType.ITEM ? 1 : 0);
     }
 
-    public int getOutputItemSlots(ItemStack stack) {
+    public int getOutputItemSlots(TileCasing casing) {
         return 0;
     }
 
-    public List<String> getInputItemNames(ItemStack stack) {
+    public List<String> getInputItemNames(TileCasing casing) {
         List<String> names = new ArrayList();
-        FuelType type = MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().type;
+        FuelType type = MachineVariant.readFromNBT(casing.machineStored.getTagCompound()).getFuel().type;
         if (type == FuelType.FURNACE || type == FuelType.ITEM)
             names.add("Fuel");
         return names;
@@ -363,11 +356,10 @@ public class ItemMachine extends ItemBase {
         float value = 0;
 
         if (!combinedHasStat) {
-            if(stat == MachineStat.MAXHU)
-            return 1000;
+            if (stat == MachineStat.MAXHU)
+                return 1000;
             value = 0;
-        }
-        else if (casingHasStat && !machineHasStat)
+        } else if (casingHasStat && !machineHasStat)
             value = (float) casing.getVariant().getStat(stat);
         else if (!casingHasStat && machineHasStat)
             value = (float) MachineVariant.readFromNBT(stack.getTagCompound()).getStat(stat);
@@ -440,6 +432,69 @@ public class ItemMachine extends ItemBase {
         }
     }
 
+    protected void process(World world, BlockPos pos, ItemStack machineStack, NBTTagCompound data) {
+        if (!world.isRemote) {
+            boolean changedValue = false;
+            heatUp(machineStack, world, pos, data);
+            int time = data.getInteger("time");
+            float curHU = data.getFloat("curHU");
+            float huTick = data.getFloat("huTick");
+
+            ProcessRecipe recipe = getRecipe(world, pos, machineStack);
+            if (canRun(world, pos, machineStack, recipe)) {
+                data.setBoolean("running", true);
+                time++;
+                curHU -= getHUDrain(world, pos, machineStack);
+                data.setFloat("curHU", curHU);
+                if (time >= getTimeToProcess(world, pos, getCasingTile(world, pos).machineStored, recipe)) {
+                    processFinish(world, pos, machineStack, recipe);
+                    curHU = data.getFloat("curHU");
+                    time = 0;
+                }
+                changedValue = true;
+            } else if (time != 0) {
+                time = 0;
+                data.setBoolean("running", false);
+                changedValue = true;
+            }
+            if (changedValue) {
+                getCasingTile(world, pos).markDirty();
+                data.setInteger("time", time);
+                data.setFloat("curHU", curHU);
+                data.setFloat("huTick", huTick);
+            }
+        }
+    }
+
+    public ItemStackHandler getInputInventory(TileCasing casing) {
+        return casing.getInputInventory();
+    }
+
+    public ItemStackHandler getOutputInventory(TileCasing casing) {
+        return casing.getOutputInventory();
+    }
+
+    public ProcessRecipe getRecipe(World world, BlockPos pos, ItemStack machineStack) {
+        return null;
+    }
+
+    public void processFinish(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
+    }
+
+    public boolean hasMultiblock() {
+        return false;
+    }
+
+    public boolean hasValidMultiblock(World world, BlockPos pos, ItemStack machineStack) {
+        return false;
+    }
+
+    public boolean canRun(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
+        float curHU = getCasingTile(world, pos).machineData.getFloat("curHU");
+        return (!hasMultiblock() || (hasMultiblock() && hasValidMultiblock(world, pos, machineStack))) && recipe != null && curHU > 0 && getOutputInventory(getCasingTile(world, pos))
+                .insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty();
+    }
+
     public float getBaseTimeToProcess(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
         return 100f;
     }
@@ -478,6 +533,6 @@ public class ItemMachine extends ItemBase {
     }
 
     public void update(World world, BlockPos pos, ItemStack machineStored, NBTTagCompound machineData) {
-
+        process(world, pos, machineStored, machineData);
     }
 }

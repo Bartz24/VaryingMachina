@@ -30,7 +30,7 @@ public enum FuelType {
 	public void getFuel(TileCasing tile, World world, BlockPos pos, NBTTagCompound data) {
 		MachineVariant variant = MachineVariant.readFromNBT(tile.machineStored.getTagCompound());
 		MachineFuelData fuelData = tile.getMachine().getMachineFuelData(tile.machineStored, world, pos);
-		ItemStack fuelStack = tile.getInputInventory().getStackInSlot(tile.getMachine().getFuelSlotID(tile.machineStored));
+		ItemStack fuelStack = tile.getMachine().getInputInventory(tile).getStackInSlot(tile.getMachine().getFuelSlotID(tile));
 		if (variant.getFuel().type == RF) {
 			float extract = tile.energyStorage.extractInternalEnergy((int) Math.ceil(fuelData.rfPerTick), false);			
 			if (extract > 0) {

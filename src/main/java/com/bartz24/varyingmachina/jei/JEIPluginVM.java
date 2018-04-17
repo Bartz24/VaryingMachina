@@ -26,8 +26,8 @@ public class JEIPluginVM implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
         subtypeRegistry.useNbtForSubtypes(Item.REGISTRY.getObject(ModBlocks.casing.getRegistryName()));
-        subtypeRegistry.useNbtForSubtypes(ModItems.smelter, ModItems.grinder, ModItems.presser, ModItems.assembler, ModItems.mixer);
-        subtypeRegistry.useNbtForSubtypes(ModItems.regulator, ModItems.inserter, ModItems.remover, ModItems.bellow, ModItems.gearbox);
+        subtypeRegistry.useNbtForSubtypes(ModItems.smelter, ModItems.grinder, ModItems.presser, ModItems.assembler, ModItems.mixer, ModItems.combustion, ModItems.itembuffer);
+        subtypeRegistry.useNbtForSubtypes(ModItems.regulator, ModItems.inserter, ModItems.remover, ModItems.bellow, ModItems.gearbox, ModItems.worldinserter, ModItems.worldremover);
     }
 
     @Override
@@ -41,6 +41,7 @@ public class JEIPluginVM implements IModPlugin {
         registry.addRecipeCategories(new PresserRecipeCategory(guiHelper));
         registry.addRecipeCategories(new AssemblerRecipeCategory(guiHelper));
         registry.addRecipeCategories(new MixerRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new CombustionRecipeCategory(guiHelper));
     }
 
     @Override
@@ -59,6 +60,8 @@ public class JEIPluginVM implements IModPlugin {
         addCatalysts(registry, (ItemMachine) ModItems.assembler, "assembler");
         addProcessRecipes(ProcessRecipeWrapper.class, registry, "mixer");
         addCatalysts(registry, (ItemMachine) ModItems.mixer, "mixer");
+        addProcessRecipes(ProcessRecipeWrapper.class, registry, "combustion");
+        addCatalysts(registry, (ItemMachine) ModItems.combustion, "combustion");
 
         // TODO add click areas
     }
