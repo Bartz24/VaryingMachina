@@ -90,7 +90,10 @@ public class TileCasing extends TileGenericPower implements ITickable {
     }
 
     public ItemModule getModule(EnumFacing side) {
-        return (ItemModule) modules.getStackInSlot(side.getIndex()).getItem();
+        if (!modules.getStackInSlot(side.getIndex()).isEmpty())
+            return (ItemModule) modules.getStackInSlot(side.getIndex()).getItem();
+        else
+            return null;
     }
 
     public void setMachine(ItemStack machine) {
@@ -125,18 +128,18 @@ public class TileCasing extends TileGenericPower implements ITickable {
 
     @Override
     public void update() {
-        if (getRedstoneSignal() == 0) {
-            if (!machineStored.isEmpty()) {
-                getMachine().update(getWorld(), getPos(), machineStored, machineData);
+        if (!machineStored.isEmpty()) {
+            getMachine().update(getWorld(), getPos(), machineStored, machineData);
+            if (getRedstoneSignal() == 0) {
                 for (int i = 0; i < 6; i++) {
                     if (!modules.getStackInSlot(i).isEmpty()) {
                         getModule(EnumFacing.values()[i]).update(this, EnumFacing.values()[i]);
                     }
                 }
-            } else if (machineData.getSize() > 0) {
-                machineData = new NBTTagCompound();
-                markDirty();
             }
+        } else if (machineData.getSize() > 0) {
+            machineData = new NBTTagCompound();
+            markDirty();
         }
     }
 

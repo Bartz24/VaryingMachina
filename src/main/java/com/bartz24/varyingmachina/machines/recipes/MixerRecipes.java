@@ -5,9 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import scala.actors.threadpool.Arrays;
 
 import java.awt.*;
+import java.util.Arrays;
 
 @ProcessRecipeRegistry
 public class MixerRecipes {

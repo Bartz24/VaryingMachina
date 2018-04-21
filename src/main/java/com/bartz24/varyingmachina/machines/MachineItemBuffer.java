@@ -90,11 +90,11 @@ public class MachineItemBuffer extends ItemMachine {
 
     @SideOnly(Side.CLIENT)
     public void initGui(GuiCasing gui, List buttonList, TileCasing casing) {
-        gui.guiComponents.add(new GuiStatsComp(225, 25, getCombinedStats(), casing));
+        gui.addComponent("stats", new GuiStatsComp(225, 25, getCombinedStats(), casing));
     }
 
     @SideOnly(Side.CLIENT)
     public void updateGuiComps(GuiCasing gui, List buttonList, TileCasing casing) {
-        gui.guiComponents.get(0).updateData(getCombinedStats(), casing);
+        gui.updateComponent("stats", getCombinedStats(), casing);
     }
 }

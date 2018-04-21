@@ -10,102 +10,103 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public class TileBase extends TileEntity {
-	private String name;
+    private String name;
 
-	public TileBase(String name) {
-		this.name = name;
-	}
+    public TileBase(String name) {
+        this.name = name;
+    }
 
-	public ITextComponent getDisplayName() {
-		return new TextComponentTranslation("container.varyingmachina." + name);
-	}
+    public ITextComponent getDisplayName() {
+        return new TextComponentTranslation("container.varyingmachina." + name);
+    }
 
-	private int prevRedstoneSignal;
+    private int prevRedstoneSignal;
 
-	public boolean receivedPulse() {
-		return getRedstoneSignal() > 0 && prevRedstoneSignal == 0;
-	}
+    public boolean receivedPulse() {
+        return getRedstoneSignal() > 0 && prevRedstoneSignal == 0;
+    }
 
-	public boolean canAcceptRedstone() {
-		return true;
-	};
+    public boolean canAcceptRedstone() {
+        return true;
+    }
 
-	public int getRedstoneSignal() {
-		int signal = 0;
-		if (canAcceptRedstone()) {
-			for (EnumFacing dir : EnumFacing.VALUES) {
-				int redstoneSide = getWorld().getRedstonePower(getPos().offset(dir), dir);
-				signal = Math.max(signal, redstoneSide);
-			}
-		}
-		return signal;
-	}
+    ;
 
-	public int getRedstoneSignalFromSide(EnumFacing dir) {
-		int redstoneSignal = 0;
-		if (canAcceptRedstone()) {
-			int redstoneSide = getWorld().getRedstonePower(getPos().offset(dir), dir);
-			redstoneSignal = Math.max(redstoneSignal, redstoneSide);
-		}
-		return redstoneSignal;
-	}
+    public int getRedstoneSignal() {
+        int signal = 0;
+        if (canAcceptRedstone()) {
+            for (EnumFacing dir : EnumFacing.VALUES) {
+                int redstoneSide = getWorld().getRedstonePower(getPos().offset(dir), dir);
+                signal = Math.max(signal, redstoneSide);
+            }
+        }
+        return signal;
+    }
 
-	public void updateRedstone() {
-		if (!world.isRemote) {
-			prevRedstoneSignal = getRedstoneSignal();
-		}
-	}
+    public int getRedstoneSignalFromSide(EnumFacing dir) {
+        int redstoneSignal = 0;
+        if (canAcceptRedstone()) {
+            int redstoneSide = getWorld().getRedstonePower(getPos().offset(dir), dir);
+            redstoneSignal = Math.max(redstoneSignal, redstoneSide);
+        }
+        return redstoneSignal;
+    }
 
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound nbtTag = new NBTTagCompound();
-		writeToNBT(nbtTag);
-		return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
-	}
+    public void updateRedstone() {
+        if (!world.isRemote) {
+            prevRedstoneSignal = getRedstoneSignal();
+        }
+    }
 
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-		super.onDataPacket(net, packet);
-		readFromNBT(packet.getNbtCompound());
-	}
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound nbtTag = new NBTTagCompound();
+        writeToNBT(nbtTag);
+        return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
+    }
 
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+        super.onDataPacket(net, packet);
+        readFromNBT(packet.getNbtCompound());
+    }
 
-	@Override
-	public void handleUpdateTag(NBTTagCompound tag) {
-		readFromNBT(tag);
-	}
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
 
-	public void markDirty() {
-		super.markDirty();
-		if (world != null && !world.isRemote)
-			world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), 0);
-	}
-	
-	public void markDirtyBlockUpdate() {
-		super.markDirty();
-		if (world != null && !world.isRemote)
-		{
-			world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), 0);
-			world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), 3);
-			world.notifyNeighborsOfStateChange(pos, blockType, true);
-		}
-	}
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        readFromNBT(tag);
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound = super.writeToNBT(compound);
+    public void markDirty() {
+        super.markDirty();
+        if (world != null && !world.isRemote)
+            world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), 0);
+    }
 
-		compound.setInteger("pSignal", prevRedstoneSignal);
-		return compound;
-	}
+    public void markDirtyBlockUpdate() {
+        super.markDirty();
+        if (world != null && !world.isRemote) {
+            world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), 0);
+            world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), 3);
+            world.notifyNeighborsOfStateChange(pos, blockType, true);
+        }
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		prevRedstoneSignal = compound.getInteger("pSignal");
-	}
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        compound = super.writeToNBT(compound);
+
+        compound.setInteger("pSignal", prevRedstoneSignal);
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        prevRedstoneSignal = compound.getInteger("pSignal");
+    }
 }

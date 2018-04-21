@@ -64,10 +64,6 @@ public class GrinderRecipes {
                     if (gem.equals("gem" + ore.substring(4, ore.length())))
                         addOreToOreRecipe(ore, gem, 3.5f, 1f, 1f);
                 }
-                for (String crystal : OreDictionary.getOreNames()) {
-                    if (crystal.equals("crystal" + ore.substring(4, ore.length())))
-                        addOreToOreRecipe(ore, crystal, 1.8f, 1f, 1f);
-                }
                 for (String ingot : OreDictionary.getOreNames()) {
                     if (!ore.substring(4, ore.length()).equals("Aluminum") && ingot.equals("ingot" + ore.substring(4, ore.length())))
                         addOreToOreRecipe(ore, ingot, 2f, 1f, 1f);

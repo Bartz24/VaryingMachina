@@ -66,6 +66,11 @@ public class AssemblerRecipes {
                             getHeatItem(variant.getMachineTier()), getSuperHeatItem(variant.getMachineTier()), getCircuitItem(variant.getMachineTier())),
                     (float) (418f * Math.pow(tierRate, variant.getMachineTier())));
             assemblerRecipes.addRecipe(
+                    new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.assembler), variant)),
+                    Arrays.asList(variant.getPlateRecipeItem(16),
+                            variant.getGearRecipeItem(4), getCircuitItem(variant.getMachineTier())),
+                    (float) (322f * Math.pow(tierRate, variant.getMachineTier())));
+            assemblerRecipes.addRecipe(
                     new RecipeItem(MachineVariant.writeVariantToStack(new ItemStack(ModItems.itembuffer), variant)),
                     Arrays.asList(variant.getPlateRecipeItem(8),
                             new RecipeItem(new ItemStack(Blocks.CHEST)), getCircuitItem(variant.getMachineTier())),

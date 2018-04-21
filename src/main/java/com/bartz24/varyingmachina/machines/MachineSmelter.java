@@ -96,10 +96,11 @@ public class MachineSmelter extends ItemMachine {
         int time = casing.machineData.getInteger("time");
         int huTick = (int) (casing.machineData.getFloat("huTick")
                 - (running ? getHUDrain(casing.getWorld(), casing.getPos(), casing.machineStored) : 0));
-        gui.guiComponents.add(new GuiHeatBar(136, 25,
+
+        gui.addComponent("heat", new GuiHeatBar(136, 25,
                 (int) getCombinedStat(MachineStat.MAXHU, casing.machineStored, casing.getWorld(), casing.getPos()),
                 curHU, huTick));
-        gui.guiComponents.add(new GuiArrowProgress(75, 40,
+        gui.addComponent("arrow", new GuiArrowProgress(75, 40,
                 getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time));
     }
 
@@ -116,10 +117,9 @@ public class MachineSmelter extends ItemMachine {
         int time = casing.machineData.getInteger("time");
         int huTick = (int) (casing.machineData.getFloat("huTick")
                 - (running ? getHUDrain(casing.getWorld(), casing.getPos(), casing.machineStored) : 0));
-        gui.guiComponents.get(2).updateData(
+        gui.updateComponent("heat",
                 (int) getCombinedStat(MachineStat.MAXHU, casing.machineStored, casing.getWorld(), casing.getPos()),
                 curHU, huTick);
-        gui.guiComponents.get(3)
-                .updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
+        gui.updateComponent("arrow", getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
     }
 }

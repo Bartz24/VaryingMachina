@@ -153,24 +153,24 @@ public class ItemMachine extends ItemBase {
             switch (fuelInfo.type) {
                 case FLUID:
                     FluidTankFiltered tank = casing.inputFluids.getTankInSlot(0);
-                    gui.guiComponents.add(new GuiFluidTank(7, 33, tank.getCapacity(), tank.getFluidAmount(),
+                    gui.addComponent("fuel", new GuiFluidTank(7, 33, tank.getCapacity(), tank.getFluidAmount(),
                             tank.getFluid()));
                     break;
                 case FURNACE:
-                    gui.guiComponents.add(new GuiFuel(9, 37, (int) maxHU, (int) itemHU));
+                    gui.addComponent("fuel", new GuiFuel(9, 37, (int) maxHU, (int) itemHU));
                     break;
                 case ITEM:
-                    gui.guiComponents.add(new GuiFuel(9, 37, (int) maxHU, (int) itemHU));
+                    gui.addComponent("fuel", new GuiFuel(9, 37, (int) maxHU, (int) itemHU));
                     break;
                 case MANA:
                     break;
                 case RF:
-                    gui.guiComponents.add(new GuiRFBar(8, 25, casing.energyStorage.getMaxEnergyStored(),
+                    gui.addComponent("fuel", new GuiRFBar(8, 25, casing.energyStorage.getMaxEnergyStored(),
                             casing.energyStorage.getEnergyStored(), 0, false));
                     break;
             }
         }
-        gui.guiComponents.add(new GuiStatsComp(155, 25, getCombinedStats(), casing));
+        gui.addComponent("stats", new GuiStatsComp(155, 25, getCombinedStats(), casing));
     }
 
     @SideOnly(Side.CLIENT)
@@ -183,24 +183,24 @@ public class ItemMachine extends ItemBase {
             switch (fuelInfo.type) {
                 case FLUID:
                     FluidTankFiltered tank = casing.inputFluids.getTankInSlot(0);
-                    gui.guiComponents.get(0).updateData(tank.getCapacity(), tank.getFluidAmount(),
+                    gui.updateComponent("fuel", tank.getCapacity(), tank.getFluidAmount(),
                             tank.getFluid());
                     break;
                 case FURNACE:
-                    gui.guiComponents.get(0).updateData((int) maxHU, (int) itemHU);
+                    gui.updateComponent("fuel", (int) maxHU, (int) itemHU);
                     break;
                 case ITEM:
-                    gui.guiComponents.get(0).updateData((int) maxHU, (int) itemHU);
+                    gui.updateComponent("fuel", (int) maxHU, (int) itemHU);
                     break;
                 case MANA:
                     break;
                 case RF:
-                    gui.guiComponents.get(0).updateData(casing.energyStorage.getMaxEnergyStored(),
+                    gui.updateComponent("fuel", casing.energyStorage.getMaxEnergyStored(),
                             casing.energyStorage.getEnergyStored(), 0);
                     break;
             }
         }
-        gui.guiComponents.get(1).updateData(getCombinedStats(), casing);
+        gui.updateComponent("stats", getCombinedStats(), casing);
     }
 
     @SideOnly(Side.CLIENT)
@@ -491,7 +491,7 @@ public class ItemMachine extends ItemBase {
 
     public boolean canRun(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
         float curHU = getCasingTile(world, pos).machineData.getFloat("curHU");
-        return (!hasMultiblock() || (hasMultiblock() && hasValidMultiblock(world, pos, machineStack))) && recipe != null && curHU > 0 && getOutputInventory(getCasingTile(world, pos))
+        return getCasingTile(world, pos).getRedstoneSignal() == 0 && (!hasMultiblock() || (hasMultiblock() && hasValidMultiblock(world, pos, machineStack))) && recipe != null && curHU > 0 && getOutputInventory(getCasingTile(world, pos))
                 .insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty();
     }
 

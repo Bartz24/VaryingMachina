@@ -107,8 +107,7 @@ public class MachineAssembler extends ItemMachine {
         super.initGui(gui, buttonList, casing);
         int time = casing.machineData.getInteger("time");
         ProcessRecipe recipe = AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(casing.getWorld(), casing.getPos()), false, false, Integer.MAX_VALUE);
-        gui.guiComponents.add(new GuiStatsComp(155, 25, getCombinedStats(), casing));
-        gui.guiComponents.add(new GuiArrowProgress(95, 38,
+        gui.addComponent("arrow", new GuiArrowProgress(95, 38,
                 getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time));
     }
 
@@ -117,8 +116,6 @@ public class MachineAssembler extends ItemMachine {
         super.updateGuiComps(gui, buttonList, casing);
         int time = casing.machineData.getInteger("time");
         ProcessRecipe recipe = AssemblerRecipes.assemblerRecipes.getRecipe(getInputs(casing.getWorld(), casing.getPos()), false, false, Integer.MAX_VALUE);
-        gui.guiComponents.get(1).updateData(getCombinedStats(), casing);
-        gui.guiComponents.get(2)
-                .updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
+        gui.updateComponent("arrow", getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
     }
 }

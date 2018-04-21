@@ -93,7 +93,7 @@ public class MachineGrinder extends ItemMachine {
             }
         }
         setBufferStacks(data, buffer);
-        if(changed)
+        if (changed)
             getCasingTile(world, pos).markDirty();
     }
 
@@ -179,7 +179,7 @@ public class MachineGrinder extends ItemMachine {
         int huTick = (int) (casing.machineData.getFloat("huTick") - (running ? (4f
                 * (float) getCombinedStat(MachineStat.SPEED, casing.machineStored, casing.getWorld(), casing.getPos()))
                 : 0));
-        gui.guiComponents.set(1, new GuiStatsComp(155, 25, getCombinedStats(), casing) {
+        gui.addComponent("stats", new GuiStatsComp(155, 25, getCombinedStats(), casing) {
             @Override
             public void addStatTooltip(TileCasing casing, MachineStat stat, List<String> text) {
                 if (stat == MachineStat.SPEED) {
@@ -192,7 +192,7 @@ public class MachineGrinder extends ItemMachine {
                     super.addStatTooltip(casing, stat, text);
             }
         });
-        gui.guiComponents.add(new GuiArrowProgress(75, 40,
+        gui.addComponent("arrow", new GuiArrowProgress(75, 40,
                 getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null), time));
     }
 
@@ -206,7 +206,6 @@ public class MachineGrinder extends ItemMachine {
         int huTick = (int) (casing.machineData.getFloat("huTick") - (running ? (4f
                 * (float) getCombinedStat(MachineStat.SPEED, casing.machineStored, casing.getWorld(), casing.getPos()))
                 : 0));
-        gui.guiComponents.get(2)
-                .updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null), time);
+        gui.updateComponent("arrow", getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null), time);
     }
 }

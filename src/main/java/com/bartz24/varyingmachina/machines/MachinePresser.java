@@ -134,7 +134,7 @@ public class MachinePresser extends ItemMachine {
                 Integer.MAX_VALUE);
         ProcessRecipe recipe = PresserRecipes.presserRecipes.getRecipe(input);
         int time = casing.machineData.getInteger("time");
-        gui.guiComponents.add(new GuiArrowProgress(60, 40,
+        gui.addComponent("arrow", new GuiArrowProgress(60, 40,
                 getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time));
 
         PresserPattern pattern = getPattern(casing.machineData);
@@ -170,7 +170,6 @@ public class MachinePresser extends ItemMachine {
                 Integer.MAX_VALUE);
         ProcessRecipe recipe = PresserRecipes.presserRecipes.getRecipe(input);
         int time = casing.machineData.getInteger("time");
-        gui.guiComponents.get(2)
-                .updateData(getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
+        gui.updateComponent("arrow", getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
     }
 }

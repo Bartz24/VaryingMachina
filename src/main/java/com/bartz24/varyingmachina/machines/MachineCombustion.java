@@ -1,10 +1,12 @@
 package com.bartz24.varyingmachina.machines;
 
 import com.bartz24.varyingmachina.ItemHelper;
+import com.bartz24.varyingmachina.base.block.BlockCasing;
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
 import com.bartz24.varyingmachina.base.inventory.GuiHeatBar;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
+import com.bartz24.varyingmachina.base.item.ItemModule;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
 import com.bartz24.varyingmachina.base.recipe.RecipeItem;
@@ -12,6 +14,7 @@ import com.bartz24.varyingmachina.base.recipe.RecipeObject;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
 import com.bartz24.varyingmachina.machines.recipes.CombustionRecipes;
 import com.bartz24.varyingmachina.machines.recipes.SmelterRecipes;
+import com.bartz24.varyingmachina.modules.ModuleWorldInserter;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -19,11 +22,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,11 +48,24 @@ public class MachineCombustion extends ItemMachine {
         float curHU = getCasingTile(world, pos).machineData.getFloat("curHU");
         List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX(),
                 pos.getY() + 1, pos.getZ(), pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1));
-        List<RecipeObject> items = new ArrayList<>();
-        for (EntityItem i : list) {
-            items.add(new RecipeItem(i.getItem()));
+        List<ItemStack> items = new ArrayList<>();
+        List<RecipeObject> itemObjs = new ArrayList<>();
+        for (EntityItem o : list) {
+            ItemStack i = o.getItem().copy();
+            boolean added = false;
+            for (ItemStack i2 : items) {
+                if (i2.isItemEqual(i)) {
+                    i2.setCount(i2.getCount() + i.getCount());
+                    added = true;
+                }
+            }
+            if (!added)
+                items.add(i);
         }
-        return CombustionRecipes.combustionRecipes.getMultiRecipe(items, curHU, getCombinedStat(MachineStat.PRESSURE, machineStack, world, pos));
+        for (ItemStack i : items) {
+            itemObjs.add(new RecipeItem(i));
+        }
+        return CombustionRecipes.combustionRecipes.getMultiRecipe(itemObjs, curHU, getCombinedStat(MachineStat.PRESSURE, machineStack, world, pos));
     }
 
     public void processFinish(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
@@ -109,15 +127,17 @@ public class MachineCombustion extends ItemMachine {
 
             ItemStack stack = recipe.getItemOutputs().get(0).copy();
 
-            /*TileCombustionCollector collector = getCollector(world, pos);
-            if (collector != null) {
-                for (int i = 0; i < 5; i++) {
+            getInserter(world, pos);
+
+            TileCasing buffer = getInserter(world, pos);
+            if (buffer != null) {
+                for (int i = 0; i < buffer.getInputInventory().getSlots(); i++) {
                     if (!stack.isEmpty())
-                        stack = collector.getInventory().insertItem(i, stack, false);
+                        stack = buffer.getInputInventory().insertItem(i, stack, false);
                     else
                         break;
                 }
-            }*/
+            }
             if (!stack.isEmpty()) {
                 Entity entity = new EntityItem(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F,
                         stack);
@@ -136,6 +156,22 @@ public class MachineCombustion extends ItemMachine {
             }
         }
         getCasingTile(world, pos).machineData.setFloat("curHU", curHU);
+    }
+
+    private TileCasing getInserter(World world, BlockPos pos) {
+        BlockPos[] poses = new BlockPos[]{pos.add(-1, 1, 0), pos.add(1, 1, 0), pos.add(0, 1, -1), pos.add(0, 1, 1),
+                pos.add(0, 2, 0)};
+        for (BlockPos p : poses) {
+            TileEntity t = world.getTileEntity(p);
+            if (t != null && t instanceof TileCasing) {
+                TileCasing c = (TileCasing) t;
+                BlockPos dir = p.add(-pos.up().getX(), -pos.up().getY(), -pos.up().getZ());
+                ItemModule m = c.getModule(EnumFacing.getFacingFromVector(dir.getX(), dir.getY(), dir.getZ()).getOpposite());
+                if (m instanceof ModuleWorldInserter)
+                    return c;
+            }
+        }
+        return null;
     }
 
     public float getHUDrain(World world, BlockPos pos, ItemStack machineStack) {
@@ -188,7 +224,7 @@ public class MachineCombustion extends ItemMachine {
         boolean running = casing.machineData.getBoolean("running");
         int huTick = (int) (casing.machineData.getFloat("huTick")
                 - (running ? getHUDrain(casing.getWorld(), casing.getPos(), casing.machineStored) : 0));
-        gui.guiComponents.add(new GuiHeatBar(136, 25,
+        gui.addComponent("heat", new GuiHeatBar(136, 25,
                 (int) getCombinedStat(MachineStat.MAXHU, casing.machineStored, casing.getWorld(), casing.getPos()),
                 curHU, huTick));
     }
@@ -200,7 +236,7 @@ public class MachineCombustion extends ItemMachine {
         boolean running = casing.machineData.getBoolean("running");
         int huTick = (int) (casing.machineData.getFloat("huTick")
                 - (running ? getHUDrain(casing.getWorld(), casing.getPos(), casing.machineStored) : 0));
-        gui.guiComponents.get(2).updateData(
+        gui.updateComponent("heat",
                 (int) getCombinedStat(MachineStat.MAXHU, casing.machineStored, casing.getWorld(), casing.getPos()),
                 curHU, huTick);
     }

@@ -7,9 +7,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import scala.actors.threadpool.Arrays;
 
 import java.awt.*;
+import java.util.Arrays;
 
 @ProcessRecipeRegistry
 public class CombustionRecipes {
@@ -35,7 +35,7 @@ public class CombustionRecipes {
     @ProcessRecipeRegistry
     public static void registerRecipes() {
         combustionRecipes.addRecipe(new RecipeItem(new ItemStack(Items.GUNPOWDER, 3)), new RecipeItem(new ItemStack(Items.FLINT)), 1120, 1875);
-        combustionRecipes.addRecipe(new RecipeItem(new ItemStack(Items.DIAMOND, 1)), new RecipeItem(new ItemStack(Blocks.COAL_BLOCK)), 800, 3644);
+        combustionRecipes.addRecipe(new RecipeItem(new ItemStack(Items.DIAMOND, 1)), new RecipeItem(new ItemStack(Blocks.COAL_BLOCK, 8)), 800, 3644);
 //TODO Plant matter, slime ball
         combustionRecipes.addRecipe(new RecipeItem(new ItemStack(ModItems.darkmatter)), Arrays.asList(new RecipeObject[]{new RecipeListOreDict(6, "ingotRefinedObsidian", "ingotTungstensteel", "ingotEnderium", "ingotEndSteel"), new RecipeListOreDict(11, "ingotTitanium", "ingotPlatinum", "ingotSoularium", "ingotDarkSteel"), new RecipeListOreDict(15, "ingotInvar", "ingotElectricalSteel", "ingotSteel", "ingotDarkSteel"), new RecipeOreDictPriority(6, "dustObsidian", "dustCoal")}), 3678, 2476);
         combustionRecipes.addRecipe(new RecipeItem(new ItemStack(ModItems.lightmatter)), Arrays.asList(new RecipeObject[]{new RecipeListOreDict(6, "ingotVibrantAlloy", "ingotLumium"), new RecipeListOreDict(11, "ingotSignalum", "ingotPulsatingIron", "ingotOsmium", "ingotConstantan"), new RecipeListOreDict(15, "ingotBronze", "ingotElectrum", "ingotCobalt", "ingotAluminium"), new RecipeOreDictPriority(6, "dustAerotheum", "dustSaltpeter")}), 4592, 1145);

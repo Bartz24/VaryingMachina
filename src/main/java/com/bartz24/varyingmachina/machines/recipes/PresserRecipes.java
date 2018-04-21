@@ -53,13 +53,6 @@ public class PresserRecipes {
 										Collections.singletonList(new RecipeOreDict(gem, 1)), "presser",
 										PresserPattern.getDefaultPlatePattern(), 600, 800));
 				}
-				for (String crystal : OreDictionary.getOreNames()) {
-					if (crystal.equals("crystal" + ore.substring(5, ore.length())))
-						presserRecipes.addRecipe(
-								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 1)),
-										Collections.singletonList(new RecipeOreDict(crystal, 1)), "presser",
-										PresserPattern.getDefaultPlatePattern(), 600, 800));
-				}
 			}
 
 			if (ore.startsWith("rod")) {
@@ -75,13 +68,6 @@ public class PresserRecipes {
 						presserRecipes.addRecipe(
 								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 2)),
 										Collections.singletonList(new RecipeOreDict(gem, 1)), "presser",
-										PresserPattern.getDefaultRodPattern(), 200, 200));
-				}
-				for (String crystal : OreDictionary.getOreNames()) {
-					if (crystal.equals("crystal" + ore.substring(3, ore.length())))
-						presserRecipes.addRecipe(
-								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 2)),
-										Collections.singletonList(new RecipeOreDict(crystal, 1)), "presser",
 										PresserPattern.getDefaultRodPattern(), 200, 200));
 				}
 			}
@@ -100,13 +86,6 @@ public class PresserRecipes {
 										Collections.singletonList(new RecipeOreDict(gem, 4)), "presser",
 										PresserPattern.getDefaultGearPattern(), 1440, 1200));
 				}
-				for (String crystal : OreDictionary.getOreNames()) {
-					if (crystal.equals("crystal" + ore.substring(4, ore.length())))
-						presserRecipes.addRecipe(
-								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 1)),
-										Collections.singletonList(new RecipeOreDict(crystal, 4)), "presser",
-										PresserPattern.getDefaultGearPattern(), 1440, 1200));
-				}
 			}
 			if (ore.startsWith("wire")) {
 				for (String ingot : OreDictionary.getOreNames()) {
@@ -121,13 +100,6 @@ public class PresserRecipes {
 						presserRecipes.addRecipe(
 								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 3)),
 										Collections.singletonList(new RecipeOreDict(gem, 1)), "presser",
-										PresserPattern.getDefaultWirePattern(), 680, 480));
-				}
-				for (String crystal : OreDictionary.getOreNames()) {
-					if (crystal.equals("crystal" + ore.substring(4, ore.length())))
-						presserRecipes.addRecipe(
-								new PresserProcessRecipe(Collections.singletonList(new RecipeOreDict(ore, 3)),
-										Collections.singletonList(new RecipeOreDict(crystal, 1)), "presser",
 										PresserPattern.getDefaultWirePattern(), 680, 480));
 				}
 			}

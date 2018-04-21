@@ -58,6 +58,7 @@ public class ProcessRecipe {
     }
 
     boolean inputsAreValidMulti(ProcessRecipe recipe) {
+
         if (inputs.size() != recipe.inputs.size())
             return false;
 
