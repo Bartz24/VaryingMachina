@@ -22,6 +22,8 @@ public class ModItems {
     public static Item lightmatter;
     @ObjectHolder("plantmatter")
     public static Item plantmatter;
+    @ObjectHolder("stonedust")
+    public static Item stonedust;
     @ObjectHolder("frozenironingot")
     public static Item frozenironingot;
 
@@ -39,6 +41,8 @@ public class ModItems {
     public static Item combustion;
     @ObjectHolder("itembuffer")
     public static Item itembuffer;
+    @ObjectHolder("extractor")
+    public static Item extractor;
 
     @ObjectHolder("regulator")
     public static Item regulator;
@@ -74,6 +78,8 @@ public class ModItems {
                 .registerItemMachineType(new MachineItemBuilder(MachineCombustion.class, References.ModID, "combustion"));
         MachineRegistry
                 .registerItemMachineType(new MachineItemBuilder(MachineItemBuffer.class, References.ModID, "itembuffer"));
+        MachineRegistry
+                .registerItemMachineType(new MachineItemBuilder(MachineExtractor.class, References.ModID, "extractor"));
 
         MachineRegistry
                 .registerItemModuleType(new ModuleItemBuilder(ModuleRegulator.class, References.ModID, "regulator"));
@@ -91,6 +97,7 @@ public class ModItems {
         registerItem(event, new ItemBase(), "darkmatter");
         registerItem(event, new ItemBase(), "lightmatter");
         registerItem(event, new ItemSuperBonemeal(), "plantmatter");
+        registerItem(event, new ItemBase(), "stonedust", "dustStone");
         registerItem(event, new ItemBase(), "frozenironingot", "ingotFrozenIron");
         registerItem(event, new ItemBlockCasing(ModBlocks.casing));
         registerItem(event, new ItemBlockBase(ModBlocks.darkmatterblock), "darkmatterblock");

@@ -31,11 +31,10 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -131,7 +130,7 @@ public class ItemMachine extends ItemBase {
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
         FuelType type = MachineVariant.readFromNBT(tile.machineStored.getTagCompound()).getFuel().type;
         if (requiresFuel(tile.machineStored) && (type == FuelType.FURNACE || type == FuelType.ITEM))
-            slots.add(new SlotItemHandler(getInputInventory(tile), getFuelSlotID(tile), 8, 53));
+            slots.add(new SlotMachina(getInputInventory(tile), getFuelSlotID(tile), 8, 53, true));
         return slots;
     }
 
@@ -278,12 +277,12 @@ public class ItemMachine extends ItemBase {
     }
 
     // Fluid Handler
-    public Fluid[] getInputFluids(ItemStack stack) {
-        List<Fluid> fluids = new ArrayList();
+    public String[] getInputFluids(ItemStack stack) {
+        List<String> fluids = new ArrayList();
         FuelType type = MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().type;
         if (requiresFuel(stack) && type == FuelType.FLUID)
-            fluids.add(MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().getFluid());
-        return fluids.toArray(new Fluid[fluids.size()]);
+            fluids.add(MachineVariant.readFromNBT(stack.getTagCompound()).getFuel().fuel);
+        return fluids.toArray(new String[fluids.size()]);
     }
 
     public int[] getMaxInputFluids(ItemStack stack) {
@@ -294,8 +293,8 @@ public class ItemMachine extends ItemBase {
         return RandomHelper.toIntArray(amounts);
     }
 
-    public Fluid[] getOutputFluids(ItemStack stack) {
-        return new Fluid[0];
+    public String[] getOutputFluids(ItemStack stack) {
+        return new String[0];
     }
 
     public int[] getMaxOutputFluids(ItemStack stack) {
@@ -364,8 +363,20 @@ public class ItemMachine extends ItemBase {
         else if (!casingHasStat && machineHasStat)
             value = (float) MachineVariant.readFromNBT(stack.getTagCompound()).getStat(stat);
         else {
-            value = (float) MachineVariant.readFromNBT(stack.getTagCompound()).getStat(stat)
-                    * (float) casing.getVariant().getStat(stat);
+            switch (stat.displayType) {
+                case PERCENT:
+                    value = (float) MachineVariant.readFromNBT(stack.getTagCompound()).getStat(stat)
+                            * (float) casing.getVariant().getStat(stat);
+                    break;
+                case ACTUALFLOAT:
+                    value = (float) MachineVariant.readFromNBT(stack.getTagCompound()).getStat(stat)
+                            * (float) casing.getVariant().getStat(stat);
+                    break;
+                case INT:
+                    value = (float) MachineVariant.readFromNBT(stack.getTagCompound()).getStat(stat)
+                            + (float) casing.getVariant().getStat(stat);
+                    break;
+            }
         }
         for (EnumFacing side : EnumFacing.values()) {
             if (!casing.modules.getStackInSlot(side.getIndex()).isEmpty())
@@ -491,8 +502,23 @@ public class ItemMachine extends ItemBase {
 
     public boolean canRun(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
         float curHU = getCasingTile(world, pos).machineData.getFloat("curHU");
-        return getCasingTile(world, pos).getRedstoneSignal() == 0 && (!hasMultiblock() || (hasMultiblock() && hasValidMultiblock(world, pos, machineStack))) && recipe != null && curHU > 0 && getOutputInventory(getCasingTile(world, pos))
-                .insertItem(0, recipe.getItemOutputs().get(0), true).isEmpty();
+        return getCasingTile(world, pos).getRedstoneSignal() == 0 && (!hasMultiblock() || (hasMultiblock() && hasValidMultiblock(world, pos, machineStack)))
+                && recipe != null && curHU > 0 && canOutputItems(world, pos, machineStack, recipe) && canOutputFluids(world, pos, machineStack, recipe);
+    }
+
+    public boolean canOutputItems(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
+        for (int i = 0; i < recipe.getItemOutputs().size(); i++)
+            if (!ItemHandlerHelper.insertItemStacked(getOutputInventory(getCasingTile(world, pos)),
+                    recipe.getItemOutputs().get(i), true).isEmpty())
+                return false;
+        return true;
+    }
+
+    public boolean canOutputFluids(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
+        for (int i = 0; i < recipe.getFluidOutputs().size(); i++)
+            if (getCasingTile(world, pos).outputFluids.fill(recipe.getFluidOutputs().get(i), true) == 0)
+                return false;
+        return true;
     }
 
     public float getBaseTimeToProcess(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {

@@ -2,12 +2,8 @@ package com.bartz24.varyingmachina.machines;
 
 import com.bartz24.varyingmachina.ItemHelper;
 import com.bartz24.varyingmachina.RandomHelper;
-import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
-import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiFluidTank;
-import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
+import com.bartz24.varyingmachina.base.inventory.*;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
-import com.bartz24.varyingmachina.base.machine.FuelType;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
@@ -16,20 +12,15 @@ import com.bartz24.varyingmachina.base.recipe.RecipeItem;
 import com.bartz24.varyingmachina.base.recipe.RecipeObject;
 import com.bartz24.varyingmachina.base.tile.FluidTankFiltered;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
-import com.bartz24.varyingmachina.machines.recipes.AssemblerRecipes;
 import com.bartz24.varyingmachina.machines.recipes.MixerRecipes;
-import com.bartz24.varyingmachina.machines.recipes.SmelterRecipes;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -62,7 +53,7 @@ public class MachineMixer extends ItemMachine {
     public void processFinish(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
         getOutputInventory(getCasingTile(world, pos)).insertItem(0, recipe.getItemOutputs().get(0), false);
         shrinkInputs(recipe.getItemInputs(), world, pos);
-        if(recipe.getFluidInputs().size() > 0)
+        if (recipe.getFluidInputs().size() > 0)
             getCasingTile(world, pos).inputFluids.getTankInSlot(getInputFluids(machineStack).length - 1).drain(recipe.getFluidInputs().get(0), true);
     }
 
@@ -111,10 +102,10 @@ public class MachineMixer extends ItemMachine {
         return 1;
     }
 
-    public Fluid[] getInputFluids(ItemStack stack) {
-        List<Fluid> fluids = new ArrayList(Arrays.asList(super.getInputFluids(stack)));
-        fluids.add(null);
-        return fluids.toArray(new Fluid[fluids.size()]);
+    public String[] getInputFluids(ItemStack stack) {
+        List<String> fluids = new ArrayList(Arrays.asList(super.getInputFluids(stack)));
+        fluids.add("");
+        return fluids.toArray(new String[fluids.size()]);
     }
 
     public int[] getMaxInputFluids(ItemStack stack) {
@@ -140,8 +131,8 @@ public class MachineMixer extends ItemMachine {
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 3; x++)
-                slots.add(new SlotItemHandler(getInputInventory(tile), y * 3 + x, 40 + 18 * x, 20 + 18 * y));
-        slots.add(new SlotItemHandler(getOutputInventory(tile), 0, 130, 38));
+                slots.add(new SlotMachina(getInputInventory(tile), y * 3 + x, 40 + 18 * x, 20 + 18 * y, true));
+        slots.add(new SlotMachina(getOutputInventory(tile), 0, 130, 38, false));
         return super.getSlots(tile, slots);
     }
 

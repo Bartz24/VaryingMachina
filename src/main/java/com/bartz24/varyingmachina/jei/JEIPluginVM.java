@@ -5,14 +5,7 @@ import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.jei.machines.*;
 import com.bartz24.varyingmachina.registry.ModBlocks;
 import com.bartz24.varyingmachina.registry.ModItems;
-
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IJeiHelpers;
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.*;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +19,7 @@ public class JEIPluginVM implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
         subtypeRegistry.useNbtForSubtypes(Item.REGISTRY.getObject(ModBlocks.casing.getRegistryName()));
-        subtypeRegistry.useNbtForSubtypes(ModItems.smelter, ModItems.grinder, ModItems.presser, ModItems.assembler, ModItems.mixer, ModItems.combustion, ModItems.itembuffer);
+        subtypeRegistry.useNbtForSubtypes(ModItems.smelter, ModItems.grinder, ModItems.presser, ModItems.assembler, ModItems.mixer, ModItems.combustion, ModItems.itembuffer, ModItems.extractor);
         subtypeRegistry.useNbtForSubtypes(ModItems.regulator, ModItems.inserter, ModItems.remover, ModItems.bellow, ModItems.gearbox, ModItems.worldinserter, ModItems.worldremover);
     }
 
@@ -42,6 +35,7 @@ public class JEIPluginVM implements IModPlugin {
         registry.addRecipeCategories(new AssemblerRecipeCategory(guiHelper));
         registry.addRecipeCategories(new MixerRecipeCategory(guiHelper));
         registry.addRecipeCategories(new CombustionRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new ExtractorRecipeCategory(guiHelper));
     }
 
     @Override
@@ -62,8 +56,17 @@ public class JEIPluginVM implements IModPlugin {
         addCatalysts(registry, (ItemMachine) ModItems.mixer, "mixer");
         addProcessRecipes(ProcessRecipeWrapper.class, registry, "combustion");
         addCatalysts(registry, (ItemMachine) ModItems.combustion, "combustion");
+        addProcessRecipes(ProcessRecipeWrapper.class, registry, "extractor");
+        addCatalysts(registry, (ItemMachine) ModItems.extractor, "extractor");
 
         // TODO add click areas
+
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("smelter", 36, 1, 0, 36));
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("grinder", 36, 1, 0, 36));
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("presser", 36, 1, 0, 36));
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("assembler", 36, 9, 0, 36));
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("mixer", 36, 9, 0, 36));
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("extractor", 36, 1, 0, 36));
     }
 
     public <T extends ProcessRecipeWrapper> void addProcessRecipes(Class<T> clazz, IModRegistry registry, String type) {

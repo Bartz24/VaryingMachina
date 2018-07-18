@@ -4,8 +4,8 @@
         "part": "varyingmachina:items/circuit"
     },
     "elements": [
-        {   "from": [ 2, 5, 7 ],
-            "to": [ 14, 11, 8 ],
+        {   "from": [ 3, 5, 7 ],
+            "to": [ 13, 12, 8 ],
             "faces": {
                 "down":  { "texture": "#all" },
                 "up":    { "texture": "#all" },
@@ -15,8 +15,8 @@
                 "east":  { "texture": "#all" }
             }
         },
-        {   "from": [ 2, 5, 7 ],
-            "to": [ 14, 11, 8 ],
+        {   "from": [ 3, 5, 7 ],
+            "to": [ 13, 12, 8 ],
             "faces": {
                 "south": { "texture": "#part" }
             }

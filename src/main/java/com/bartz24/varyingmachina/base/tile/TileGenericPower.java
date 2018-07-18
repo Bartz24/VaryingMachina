@@ -7,18 +7,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public class TileGenericPower extends TileItemInventory {
+public class TileGenericPower extends TileBase {
 
 	public EnergyContainer energyStorage;
 
 	public TileGenericPower(String name, int maxPower, int maxIn, int maxOut) {
-		super(name, 0);
-		energyStorage = new EnergyContainer(maxPower, maxIn, maxOut, 0).setSideTransferType(TransferType.BOTH,
-				EnumFacing.values());
-	}
-
-	public TileGenericPower(String name, int maxPower, int maxIn, int maxOut, int inputSlots, int outputSlots) {
-		super(name, inputSlots, outputSlots);
+		super(name);
 		energyStorage = new EnergyContainer(maxPower, maxIn, maxOut, 0).setSideTransferType(TransferType.BOTH,
 				EnumFacing.values());
 	}

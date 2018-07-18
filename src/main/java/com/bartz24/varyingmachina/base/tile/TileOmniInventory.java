@@ -10,15 +10,23 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileOmniInventory extends TileBase {
+public class TileOmniInventory extends TileGenericPower {
 	private ItemHandlerOmniDir inventory;
 
-	public TileOmniInventory(String name, int slots) {
-		this(name, slots, new int[0], new int[0]);
+	public TileOmniInventory(String name, int slots, int[] noInsert, int[] noExtract) {
+		this(name, slots, noInsert, noExtract, 0, 0, 0);
 	}
 
-	public TileOmniInventory(String name, int slots, int[] noInsert, int[] noExtract) {
-		super(name);
+	public TileOmniInventory(String name, int slots) {
+		this(name, slots, 0, 0, 0);
+	}
+
+	public TileOmniInventory(String name, int slots, int maxPower, int maxIn, int maxOut) {
+		this(name, slots, new int[0], new int[0], maxPower, maxIn, maxOut);
+	}
+
+	public TileOmniInventory(String name, int slots, int[] noInsert, int[] noExtract, int maxPower, int maxIn, int maxOut) {
+		super(name, maxPower, maxIn, maxOut);
 		inventory = new ItemHandlerOmniDir(slots, noInsert, noExtract) {
 			protected void onContentsChanged(int slot) {
 				super.onContentsChanged(slot);
@@ -27,11 +35,11 @@ public class TileOmniInventory extends TileBase {
 		};
 	}
 
-	public ItemHandlerOmniDir getInputInventory() {
+	public ItemHandlerOmniDir getInventory() {
 		return inventory;
 	}
 
-	public void setInputInventory(ItemHandlerOmniDir handler) {
+	public void setInventory(ItemHandlerOmniDir handler) {
 		inventory = handler;
 	}
 

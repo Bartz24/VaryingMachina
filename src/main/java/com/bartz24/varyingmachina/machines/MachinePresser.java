@@ -3,7 +3,7 @@ package com.bartz24.varyingmachina.machines;
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
 import com.bartz24.varyingmachina.base.inventory.GuiPresserPatternButton;
-import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
+import com.bartz24.varyingmachina.base.inventory.SlotMachina;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.SlotItemHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,9 +38,10 @@ public class MachinePresser extends ItemMachine {
 
     public ProcessRecipe getRecipe(World world, BlockPos pos, ItemStack machineStack) {
         ItemStack input = getInputInventory(getCasingTile(world, pos)).getStackInSlot(0);
-        return new PresserProcessRecipe(Collections.singletonList(new RecipeItem(input)),
+
+        return PresserRecipes.presserRecipes.getRecipe(new PresserProcessRecipe(Collections.singletonList(new RecipeItem(input)),
                 "presser", getPattern(getCasingTile(world, pos).machineData), getCombinedStat(MachineStat.PRESSURE, machineStack, world, pos),
-                Integer.MAX_VALUE);
+                Integer.MAX_VALUE));
     }
 
     public void processFinish(World world, BlockPos pos, ItemStack machineStack, ProcessRecipe recipe) {
@@ -119,8 +119,8 @@ public class MachinePresser extends ItemMachine {
     }
 
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
-        slots.add(new SlotItemHandler(getInputInventory(tile), 0, 35, 40));
-        slots.add(new SlotItemHandler(getOutputInventory(tile), 0, 95, 40));
+        slots.add(new SlotMachina(getInputInventory(tile), 0, 35, 40, true));
+        slots.add(new SlotMachina(getOutputInventory(tile), 0, 95, 40, false));
         return super.getSlots(tile, slots);
     }
 

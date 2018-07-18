@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileCasing extends TileGenericPower implements ITickable {
+public class TileCasing extends TileItemInventory implements ITickable {
 
     public SidedFluidInventory inputFluids;
     public SidedFluidInventory outputFluids;
@@ -37,7 +37,7 @@ public class TileCasing extends TileGenericPower implements ITickable {
     public NonNullList<NBTTagCompound> moduleData = NonNullList.withSize(6, new NBTTagCompound());
 
     public TileCasing() {
-        super("casing", 0, 0, 0);
+        super("casing", 0, 0, 0, 0);
         inputFluids = new SidedFluidInventory(0);
         outputFluids = new SidedFluidInventory(0);
         modules = new ItemStackHandler(6);

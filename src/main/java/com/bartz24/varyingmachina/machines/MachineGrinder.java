@@ -3,6 +3,7 @@ package com.bartz24.varyingmachina.machines;
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
 import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
+import com.bartz24.varyingmachina.base.inventory.SlotMachina;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.machine.MachineVariant;
@@ -21,7 +22,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -164,8 +164,8 @@ public class MachineGrinder extends ItemMachine {
     }
 
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
-        slots.add(new SlotItemHandler(getInputInventory(tile), 0, 50, 40));
-        slots.add(new SlotItemHandler(getOutputInventory(tile), 0, 110, 40));
+        slots.add(new SlotMachina(getInputInventory(tile), 0, 50, 40, true));
+        slots.add(new SlotMachina(getOutputInventory(tile), 0, 110, 40, false));
         return super.getSlots(tile, slots);
     }
 

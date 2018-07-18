@@ -64,11 +64,20 @@ public class ItemHandlerOmniDir extends ItemStackHandler {
         return super.insertItem(slot, stack, simulate);
     }
 
+    public ItemStack insertItemInternal(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        return super.insertItem(slot, stack, simulate);
+    }
+
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (Arrays.asList(slotsNoExtract).contains(slot)) {
             return ItemStack.EMPTY;
         }
+        return super.extractItem(slot, amount, simulate);
+    }
+
+    @Nonnull
+    public ItemStack extractItemInternal(int slot, int amount, boolean simulate) {
         return super.extractItem(slot, amount, simulate);
     }
 }

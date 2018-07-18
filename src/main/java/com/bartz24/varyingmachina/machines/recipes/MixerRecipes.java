@@ -3,6 +3,9 @@ package com.bartz24.varyingmachina.machines.recipes;
 import com.bartz24.varyingmachina.base.recipe.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -40,5 +43,13 @@ public class MixerRecipes {
         mixerRecipes.addRecipe(new RecipeOreDict("dustLumium", 4), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("glowstone"), 1000)), new RecipeOreDict("dustTin", 3), new RecipeOreDict("dustSilver", 1)}), 4.23f, 1769);
         mixerRecipes.addRecipe(new RecipeOreDict("dustSignalum", 4), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 1000)), new RecipeOreDict("dustCopper", 3), new RecipeOreDict("dustSilver", 1)}), 3.87f, 1544);
         mixerRecipes.addRecipe(new RecipeOreDict("dustEnderium", 4), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("ender"), 1000)), new RecipeOreDict("dustLead", 3), new RecipeOreDict("dustPlatinum", 1)}), 7.42f, 2864);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustBlitz", 1), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 200)), new RecipeItem(new ItemStack(Blocks.SAND))}), 4.76f, 3165);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustBasalz", 1), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 200)), new RecipeOreDict("dustObsidian", 1)}), 4.76f, 3165);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustBlizz", 1), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 200)), new RecipeItem(new ItemStack(Items.SNOWBALL))}), 4.76f, 3165);
+        mixerRecipes.addRecipe(new RecipeItem(new ItemStack(Items.BLAZE_POWDER)), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 200)), new RecipeItem(new ItemStack(Items.GLOWSTONE_DUST))}), 4.76f, 3165);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustPyrotheum", 2), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 100)), new RecipeItem(new ItemStack(Items.BLAZE_POWDER, 2)), new RecipeOreDict("dustSulfur", 1)}), 3.41f, 440);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustCryotheum", 2), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 100)), new RecipeOreDict("dustBlizz", 2), new RecipeItem(new ItemStack(Items.SNOWBALL, 1))}), 3.41f, 440);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustAerotheum", 2), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 100)), new RecipeOreDict("dustBlitz", 2), new RecipeOreDict("dustSaltpeter", 1)}), 3.41f, 440);
+        mixerRecipes.addRecipe(new RecipeOreDict("dustPetrotheum", 2), Arrays.asList(new RecipeObject[]{new RecipeFluid(new FluidStack(FluidRegistry.getFluid("redstone"), 100)), new RecipeOreDict("dustBasalz", 2), new RecipeOreDict("dustObsidian", 1)}), 3.41f, 440);
     }
 }

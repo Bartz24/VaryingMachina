@@ -4,29 +4,28 @@ import javax.annotation.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 public class FluidTankFiltered extends FluidTank {
-	private Fluid filteredFluid;
+	private String filteredFluid;
 
-	public FluidTankFiltered(int capacity, Fluid filter) {
-		this(null, capacity, filter);
+	public FluidTankFiltered(int capacity, String filterName) {
+		this(null, capacity, filterName);
 	}
 
-	public FluidTankFiltered(Fluid fluid, int amount, int capacity, Fluid filter) {
-		this(new FluidStack(fluid, amount), capacity, filter);
+	public FluidTankFiltered(Fluid fluid, int amount, int capacity, String filterName) {
+		this(new FluidStack(fluid, amount), capacity, filterName);
 	}
 
-	public FluidTankFiltered(@Nullable FluidStack fluidStack, int capacity, Fluid filter) {
+	public FluidTankFiltered(@Nullable FluidStack fluidStack, int capacity, String filterName) {
 		super(fluidStack, capacity);
-		filteredFluid = filter;
+		filteredFluid = filterName;
 	}
 
 	public boolean canFillFluidType(FluidStack fluid) {
-		if (filteredFluid == null
-				|| (fluid != null && fluid.getFluid() != null && fluid.getFluid().equals(filteredFluid)))
+		if (filteredFluid.equals("")
+				|| (fluid != null && fluid.getFluid() != null && fluid.getFluid().getName().equals(filteredFluid)))
 			return canFill();
 		else
 			return false;
@@ -34,26 +33,19 @@ public class FluidTankFiltered extends FluidTank {
 
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt = super.writeToNBT(nbt);
-		if (filteredFluid == null)
-			nbt.setString("filter", "null");
-		else
-			nbt.setString("filter", FluidRegistry.getFluidName(filteredFluid));
+			nbt.setString("filter", filteredFluid);
 		nbt.setInteger("capacity", capacity);
 		return nbt;
 	}
 
 	public FluidTank readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		String filterName = nbt.getString("filter");
-		if (!filterName.equals("null"))
-			filteredFluid = FluidRegistry.getFluid(filterName);
-		else
-			filteredFluid = null;
+		filteredFluid = nbt.getString("filter");
 		capacity = nbt.getInteger("capacity");
 		return this;
 	}
 
-	public Fluid getFilter() {
+	public String getFilter() {
 		return filteredFluid;
 	}
 }

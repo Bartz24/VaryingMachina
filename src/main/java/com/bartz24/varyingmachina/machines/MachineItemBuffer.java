@@ -1,16 +1,12 @@
 package com.bartz24.varyingmachina.machines;
 
 import com.bartz24.varyingmachina.References;
-import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiHeatBar;
 import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
+import com.bartz24.varyingmachina.base.inventory.SlotMachina;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
-import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
-import com.bartz24.varyingmachina.base.recipe.RecipeItem;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
-import com.bartz24.varyingmachina.machines.recipes.SmelterRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,10 +19,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MachineItemBuffer extends ItemMachine {
@@ -55,7 +49,7 @@ public class MachineItemBuffer extends ItemMachine {
         for (int i = 0; i < (int) getCombinedStat(MachineStat.SIZE, tile.machineStored, tile.getWorld(), tile.getPos()); i++) {
             int y = i / 12;
             int x = i % 12;
-            slots.add(new SlotItemHandler(getInputInventory(tile), i, 8 + 18 * x, 20 + 18 * y));
+            slots.add(new SlotMachina(getInputInventory(tile), i, 8 + 18 * x, 20 + 18 * y, true));
         }
         return super.getSlots(tile, slots);
     }

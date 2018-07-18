@@ -126,7 +126,7 @@ public class MachineVariant extends IForgeRegistryEntry.Impl<MachineVariant> {
     public void addFuelTooltip(List<String> list) {
         if (fuelInfo.type == FuelType.ITEM)
             list.add(TextFormatting.YELLOW + "Fuel Type: " + fuelInfo.getStack().getDisplayName());
-        else if (fuelInfo.type == FuelType.FLUID)
+        else if (fuelInfo.type == FuelType.FLUID && fuelInfo.getFluid() != null)
             list.add(TextFormatting.YELLOW + "Fuel Type: " + fuelInfo.getFluid().getLocalizedName(new FluidStack(fuelInfo.getFluid(), 1)));
         else
             list.add(TextFormatting.YELLOW + "Fuel Type: " + fuelInfo.type.name());

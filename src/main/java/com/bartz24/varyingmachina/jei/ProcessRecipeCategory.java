@@ -78,6 +78,8 @@ public class ProcessRecipeCategory<T extends IRecipeWrapper> implements IRecipeC
 
         List<List<ItemStack>> outputs = ingredients.getOutputs(ItemStack.class);
         for (int slot = slotsBefore; slot < totalSlots; slot++) {
+            if(slot - slotsBefore >= outputs.size())
+                break;
             Vec2f pos = getOutputSlotLocations().get(slot - slotsBefore);
             layout.getItemStacks().init(slot, false, (int) pos.x, (int) pos.y);
             layout.getItemStacks().set(slot, outputs.get(slot - slotsBefore));

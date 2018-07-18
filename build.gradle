@@ -33,7 +33,7 @@ repositories {
 	}
 }
 
-version = "0.1.2"
+version = "0.1.5"
 group = "com.bartz24.varyingmachina" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "varyingmachina"
 
@@ -43,19 +43,20 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.3.2655"
+    version = "1.12.2-14.23.4.2738"
     runDir = "run"
     
-    mappings = "snapshot_20171003"
+    mappings = "snapshot_20171217"
 }
 
 dependencies {
-	compile files("lib/theoneprobe-1.12-1.4.21.jar")
-    compile files("lib/JAOPCA-1.12.2-2.2.6.78.jar")
-	compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.6.465"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16"
+	compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.8.9"
 	
-	deobfProvided "mezz.jei:jei_1.12.2:4.8.5.159:api"
-	runtime "mezz.jei:jei_1.12.2:4.8.5.159"
+	deobfProvided "mezz.jei:jei_1.12.2:4.9.1.188:api"
+	runtime "mezz.jei:jei_1.12.2:4.9.1.188"
+
+    compile fileTree(dir: 'lib', include: ['*.jar'])
 
 }
 

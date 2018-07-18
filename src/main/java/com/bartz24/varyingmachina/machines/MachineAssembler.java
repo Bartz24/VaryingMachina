@@ -3,7 +3,7 @@ package com.bartz24.varyingmachina.machines;
 import com.bartz24.varyingmachina.ItemHelper;
 import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
 import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiStatsComp;
+import com.bartz24.varyingmachina.base.inventory.SlotMachina;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
 import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +96,8 @@ public class MachineAssembler extends ItemMachine {
     public List<Slot> getSlots(TileCasing tile, List<Slot> slots) {
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 3; x++)
-                slots.add(new SlotItemHandler(getInputInventory(tile), y * 3 + x, 34 + 18 * x, 20 + 18 * y));
-        slots.add(new SlotItemHandler(getOutputInventory(tile), 0, 130, 38));
+                slots.add(new SlotMachina(getInputInventory(tile), y * 3 + x, 34 + 18 * x, 20 + 18 * y, true));
+        slots.add(new SlotMachina(getOutputInventory(tile), 0, 130, 38, false));
         return super.getSlots(tile, slots);
     }
 

@@ -71,12 +71,12 @@ public class GrinderRecipes {
             }
         }
 
-        addOreToOreRecipe("gravel", "cobblestone", 1.6f, 1f, 1f);
+        addOreToOreRecipe("gravel", "cobblestone", 1.3f, 1f, 1f);
         addOreToOreRecipe("sand", "gravel", 1.2f, 1f, 1f);
+        addOreToOreRecipe("dustStone", "stone", 1.35f, 0.8f, 2.4f);
         addOreToOreRecipe("dustWood", "logWood", 0.9f, 0f, 9f);
         addOreToObjectRecipe(new RecipeItem(new ItemStack(Items.FLINT)), "gravel", 1.9f, 0f, 1f);
         addOreToOreRecipe("dustObsidian", "obsidian", 11.5f, 4f, 4f);
-        addRecipe(new RecipeOreDict("dustCoal", 1), new RecipeItem(new ItemStack(Items.COAL)), 1.75f, 1f, 1f);
         addRecipe(new RecipeOreDict("dustCharcoal", 1), new RecipeItem(new ItemStack(Items.COAL, 1, 1)), 1.75f, 1f, 1f);
         addRecipe(new RecipeItem(new ItemStack(Items.BLAZE_POWDER)), new RecipeItem(new ItemStack(Items.BLAZE_ROD)),
                 3f, 2f, 5f);

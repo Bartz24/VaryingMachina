@@ -125,7 +125,7 @@ public class AssemblerRecipes {
         assemblerRecipes.addRecipe(
                 getCircuitItem(1),
                 Arrays.asList(new RecipeItem(new ItemStack(Blocks.STONE, 4)),
-                        new RecipeItem(new ItemStack(Items.GUNPOWDER, 4)),
+                        new RecipeItem(new ItemStack(ModItems.stonedust, 4)),
                         new RecipeItem(new ItemStack(Items.CLAY_BALL, 6))),
                 80f);
 

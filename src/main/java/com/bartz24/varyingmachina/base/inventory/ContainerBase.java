@@ -1,5 +1,7 @@
 package com.bartz24.varyingmachina.base.inventory;
 
+import com.bartz24.varyingmachina.base.tile.TileBase;
+import com.bartz24.varyingmachina.base.tile.TileGenericPower;
 import com.bartz24.varyingmachina.base.tile.TileItemInventory;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,11 +12,11 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerBase extends Container
 {
-	protected TileItemInventory tile;
+	protected TileBase tile;
 
 	protected int slotCount;
 
-	public ContainerBase(EntityPlayer player, TileItemInventory te, int playerInvOffX, int playerInvOffY)
+	public ContainerBase(EntityPlayer player, TileBase te, int playerInvOffX, int playerInvOffY)
 	{
 		tile = te;
 
@@ -33,7 +35,7 @@ public class ContainerBase extends Container
 		}
 	}
 	
-	public ContainerBase(EntityPlayer player, TileItemInventory te)
+	public ContainerBase(EntityPlayer player, TileBase te)
 	{
 		this(player, te, 0, 0);
 	}

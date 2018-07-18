@@ -10,16 +10,24 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileItemInventory extends TileBase {
+public class TileItemInventory extends TileGenericPower {
 	private ItemHandlerNamed inputInventory;
 	private ItemHandlerNamed outputInventory;
 
 	public TileItemInventory(String name, int slots) {
-		this(name, slots, 0);
+		this(name, slots, 0, 0, 0, 0);
 	}
 
 	public TileItemInventory(String name, int inputSlots, int outputSlots) {
-		super(name);
+		this(name, inputSlots, outputSlots, 0, 0, 0);
+	}
+
+	public TileItemInventory(String name, int slots, int maxPower, int maxIn, int maxOut) {
+		this(name, slots, 0, maxPower, maxIn, maxOut);
+	}
+
+	public TileItemInventory(String name, int inputSlots, int outputSlots, int maxPower, int maxIn, int maxOut) {
+		super(name, maxPower, maxIn, maxOut);
 		inputInventory = new ItemHandlerNamed(inputSlots) {
 			protected void onContentsChanged(int slot) {
 				super.onContentsChanged(slot);
