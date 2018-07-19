@@ -67,6 +67,8 @@ public class JEIPluginVM implements IModPlugin {
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("assembler", 36, 9, 0, 36));
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("mixer", 36, 9, 0, 36));
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(new MachineTransferInfo("extractor", 36, 1, 0, 36));
+
+
     }
 
     public <T extends ProcessRecipeWrapper> void addProcessRecipes(Class<T> clazz, IModRegistry registry, String type) {
