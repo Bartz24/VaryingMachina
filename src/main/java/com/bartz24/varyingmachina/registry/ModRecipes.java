@@ -48,12 +48,12 @@ public class ModRecipes {
                 "oxo",
                 "ooo",
                 'o', "dirt",
-                'x', new ItemStack(Items.GUNPOWDER)});
+                'x', new ItemStack(Items.CLAY_BALL)});
         Utils.addShapedOreRecipe(MachineVariant.writeVariantToStack(new ItemStack(ModItems.assembler), MachineVariant.REGISTRY.getValue(new ResourceLocation(References.ModID, "wood"))), new Object[]{
                 "ooo",
                 "oxo",
                 "ooo",
                 'o', "logWood",
-                'x', new ItemStack(Items.GUNPOWDER)});
+                'x', new ItemStack(Items.CLAY_BALL)});
     }
 }

@@ -1,15 +1,7 @@
 package com.bartz24.varyingmachina.registry;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.bartz24.varyingmachina.base.inventory.ContainerBase;
-import com.bartz24.varyingmachina.base.inventory.ContainerCasing;
-import com.bartz24.varyingmachina.base.inventory.ContainerModules;
-import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiModules;
+import com.bartz24.varyingmachina.base.inventory.*;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -17,13 +9,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
-public class ModGuiHandler implements IGuiHandler {
-	private static final Map<Integer, GuiMapping> guiMappings = mapGUIIDs();
+import java.util.HashMap;
+import java.util.Map;
 
-	private static Map<Integer, GuiMapping> mapGUIIDs() {
+public class ModGuiHandler implements IGuiHandler {
+	private static Map<Integer, GuiMapping> guiMappings;
+
+	public ModGuiHandler(boolean serverSide)
+	{
+		guiMappings = mapGUIIDs(serverSide);
+	}
+
+	private static Map<Integer, GuiMapping> mapGUIIDs(boolean serverSide) {
 		Map<Integer, GuiMapping> map = new HashMap();
-		addGUIMapping(map, new GuiMapping(GuiCasing.class, ContainerCasing.class, TileCasing.class)); // 0
-		addGUIMapping(map, new GuiMapping(GuiModules.class, ContainerModules.class, TileCasing.class, 7)); //1-7
+		addGUIMapping(map, new GuiMapping(serverSide ? null : GuiCasing.class, ContainerCasing.class, TileCasing.class)); // 0
+		addGUIMapping(map, new GuiMapping(serverSide ? null : GuiModules.class, ContainerModules.class, TileCasing.class, 7)); //1-7
 		return map;
 	}
 

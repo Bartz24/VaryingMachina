@@ -8,5 +8,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface ProcessRecipeRegistry {
+    public static enum ProcessRecipeStage
+    {
+        INIT,
+        POSTINIT
+    }
 
+    public ProcessRecipeStage value() default ProcessRecipeStage.INIT;
 }

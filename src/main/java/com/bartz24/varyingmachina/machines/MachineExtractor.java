@@ -1,19 +1,12 @@
 package com.bartz24.varyingmachina.machines;
 
 import com.bartz24.varyingmachina.RandomHelper;
-import com.bartz24.varyingmachina.base.inventory.GuiArrowProgress;
-import com.bartz24.varyingmachina.base.inventory.GuiCasing;
-import com.bartz24.varyingmachina.base.inventory.GuiFluidTank;
-import com.bartz24.varyingmachina.base.inventory.SlotMachina;
+import com.bartz24.varyingmachina.base.inventory.*;
 import com.bartz24.varyingmachina.base.item.ItemMachine;
 import com.bartz24.varyingmachina.base.machine.MachineStat;
-import com.bartz24.varyingmachina.base.recipe.ProcessRecipe;
-import com.bartz24.varyingmachina.base.recipe.RecipeFluid;
-import com.bartz24.varyingmachina.base.recipe.RecipeItem;
-import com.bartz24.varyingmachina.base.recipe.RecipeObject;
+import com.bartz24.varyingmachina.base.recipe.*;
 import com.bartz24.varyingmachina.base.tile.FluidTankFiltered;
 import com.bartz24.varyingmachina.base.tile.TileCasing;
-import com.bartz24.varyingmachina.machines.recipes.ExtractorRecipes;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -59,7 +52,7 @@ public class MachineExtractor extends ItemMachine {
 
 
     public ProcessRecipe getRecipe(World world, BlockPos pos, ItemStack machineStack) {
-        return ExtractorRecipes.extractorRecipes.getRecipe(getInputs(world, pos), false, false, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        return ProcessRecipeManager.getManagerFromType("extractor").getRecipe(getInputs(world, pos), false, false, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, getCombinedStat(MachineStat.MAXHU, machineStack, world, pos));
     }
 
     private List<RecipeObject> getInputs(World world, BlockPos pos) {
@@ -138,31 +131,53 @@ public class MachineExtractor extends ItemMachine {
     public void initGui(GuiCasing gui, List buttonList, TileCasing casing) {
         super.initGui(gui, buttonList, casing);
         int time = casing.machineData.getInteger("time");
+        float curHU = casing.machineData.getFloat("curHU");
+        boolean running = casing.machineData.getBoolean("running");
         FluidTankFiltered tank = casing.inputFluids.getTankInSlot(getInputFluids(casing.machineStored).length - 1);
         gui.addComponent("tank", new GuiFluidTank(27, 33, tank.getCapacity(),
                 tank.getFluidAmount(), tank.getFluid()));
+
+        ProcessRecipe recipe = ProcessRecipeManager.getManagerFromType("extractor").getRecipe(new RecipeItem(getInputInventory(casing).getStackInSlot(0)), false, false, Integer.MAX_VALUE, Integer.MAX_VALUE,
+                Integer.MAX_VALUE,
+                curHU);
         gui.addComponent("arrow", new GuiArrowProgress(75, 40,
-                getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null), time));
+                getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time));
         FluidTankFiltered tank1 = casing.outputFluids.getTankInSlot(0);
         FluidTankFiltered tank2 = casing.outputFluids.getTankInSlot(1);
         gui.addComponent("tank1", new GuiFluidTank(130, 33, tank1.getCapacity(),
                 tank1.getFluidAmount(), tank1.getFluid()));
         gui.addComponent("tank2", new GuiFluidTank(140, 33, tank2.getCapacity(),
                 tank2.getFluidAmount(), tank2.getFluid()));
+        int huTick = (int) (casing.machineData.getFloat("huTick")
+                - (running ? getHUDrain(casing.getWorld(), casing.getPos(), casing.machineStored) : 0));
+        gui.addComponent("heat", new GuiHeatBar(152, 25,
+                (int) getCombinedStat(MachineStat.MAXHU, casing.machineStored, casing.getWorld(), casing.getPos()),
+                curHU, huTick));
     }
 
     @SideOnly(Side.CLIENT)
     public void updateGuiComps(GuiCasing gui, List buttonList, TileCasing casing) {
         super.updateGuiComps(gui, buttonList, casing);
         int time = casing.machineData.getInteger("time");
+        boolean running = casing.machineData.getBoolean("running");
         FluidTankFiltered tank = casing.inputFluids.getTankInSlot(getInputFluids(casing.machineStored).length - 1);
         gui.updateComponent("tank", tank.getCapacity(),
                 tank.getFluidAmount(), tank.getFluid());
-        gui.updateComponent("arrow", getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, null), time);
+
+        float curHU = casing.machineData.getFloat("curHU");
+        ProcessRecipe recipe = ProcessRecipeManager.getManagerFromType("extractor").getRecipe(new RecipeItem(getInputInventory(casing).getStackInSlot(0)), false, false, Integer.MAX_VALUE, Integer.MAX_VALUE,
+                Integer.MAX_VALUE,
+                curHU);
+        gui.updateComponent("arrow", getTimeToProcess(casing.getWorld(), casing.getPos(), casing.machineStored, recipe), time);
         FluidTankFiltered tank1 = casing.outputFluids.getTankInSlot(0);
         FluidTankFiltered tank2 = casing.outputFluids.getTankInSlot(1);
         gui.updateComponent("tank1", tank1.getCapacity(),
                 tank1.getFluidAmount(), tank1.getFluid());
+        int huTick = (int) (casing.machineData.getFloat("huTick")
+                - (running ? getHUDrain(casing.getWorld(), casing.getPos(), casing.machineStored) : 0));
+        gui.updateComponent("heat",
+                (int) getCombinedStat(MachineStat.MAXHU, casing.machineStored, casing.getWorld(), casing.getPos()),
+                curHU, huTick);
         gui.updateComponent("tank2", tank2.getCapacity(),
                 tank2.getFluidAmount(), tank2.getFluid());
     }

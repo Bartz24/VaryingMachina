@@ -1,11 +1,11 @@
 package com.bartz24.varyingmachina.base.recipe;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bartz24.varyingmachina.ItemHelper;
-
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RecipeListItem implements RecipeObject {
 
@@ -14,6 +14,10 @@ public class RecipeListItem implements RecipeObject {
 
     public RecipeListItem(List<ItemStack> stacks, int count) {
         this.stacks = stacks;
+        amount = count;
+    }
+    public RecipeListItem(ItemStack[] stacks, int count) {
+        this.stacks= Arrays.asList(stacks);
         amount = count;
     }
 
