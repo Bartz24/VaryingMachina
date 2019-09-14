@@ -1,0 +1,7 @@
+{
+  "parent":"item/handheld",
+  "textures": {
+    "layer0":"pixellib:item/hoestick",
+    "layer1":"pixellib:item/hoehead"
+  }
+}

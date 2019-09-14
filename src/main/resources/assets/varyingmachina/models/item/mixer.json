@@ -1,8 +1,0 @@
-{
-  "parent":"varyingmachina:item/machinepartsides",
-  "textures": {
-    "all":"varyingmachina:blocks/ironmachine",
-    "part":"varyingmachina:items/mixer",
-    "top":"varyingmachina:items/mixertop"
-  }
-}

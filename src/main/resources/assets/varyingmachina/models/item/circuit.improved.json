@@ -1,6 +1,0 @@
-{
-  "parent":"varyingmachina:item/circuit",
-  "textures": {
-    "all":"varyingmachina:blocks/ironmachine"
-  }
-}

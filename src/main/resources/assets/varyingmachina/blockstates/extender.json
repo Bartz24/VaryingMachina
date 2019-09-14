@@ -1,0 +1,23 @@
+{
+  "multipart": [
+    {   "apply": { "model": "varyingmachina:block/extendercenter" }},
+    {   "when": { "north": "true" },
+      "apply": { "model": "varyingmachina:block/extender", "uvlock": true }
+    },
+    {   "when": { "east": "true" },
+      "apply": { "model": "varyingmachina:block/extender", "y": 90, "uvlock": true }
+    },
+    {   "when": { "south": "true" },
+      "apply": { "model": "varyingmachina:block/extender", "y": 180, "uvlock": true }
+    },
+    {   "when": { "west": "true" },
+      "apply": { "model": "varyingmachina:block/extender", "y": 270, "uvlock": true }
+    },
+    {   "when": { "up": "true" },
+      "apply": { "model": "varyingmachina:block/extender", "x": 270, "uvlock": true }
+    },
+    {   "when": { "down": "true" },
+      "apply": { "model": "varyingmachina:block/extender", "x": 90, "uvlock": true }
+    }
+  ]
+}
