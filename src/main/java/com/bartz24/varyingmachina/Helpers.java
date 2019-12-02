@@ -1,20 +1,19 @@
 package com.bartz24.varyingmachina;
 
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialBlocks;
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
-import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
-import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.bartz24.varyingmachina.inventory.FuelUnit;
 import com.bartz24.varyingmachina.machine.MachineStat;
 import com.bartz24.varyingmachina.machine.MachineType;
 import com.bartz24.varyingmachina.machine.MachineVariant;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialBlocks;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialItems;
+import com.emosewapixel.pixellib.materialsystem.main.Material;
+import com.emosewapixel.pixellib.materialsystem.main.ObjectType;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -59,9 +58,9 @@ public class Helpers {
     }
 
     public static ItemStack createMaterialItemStack(Material material, ObjectType type, int count) {
-        if (MaterialItems.getItem(material, type) != null)
-            return new ItemStack(MaterialItems.getItem(material, type), count);
-        return new ItemStack(MaterialBlocks.getBlock(material, type), count);
+        if (MaterialItems.get(material, type) != null)
+            return new ItemStack(MaterialItems.get(material, type), count);
+        return new ItemStack(MaterialBlocks.get(material, type), count);
     }
 
     public static List<ITextComponent> getMachineInfo(MachineType type, MachineVariant mainVariant, MachineVariant casingVariant) {

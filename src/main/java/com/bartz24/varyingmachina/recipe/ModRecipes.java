@@ -1,12 +1,5 @@
 package com.bartz24.varyingmachina.recipe;
 
-import com.EmosewaPixel.pixellib.materialsystem.MaterialRegistry;
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialBlocks;
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
-import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
-import com.EmosewaPixel.pixellib.materialsystem.materials.*;
-import com.EmosewaPixel.pixellib.resources.RecipeMaker;
-import com.EmosewaPixel.pixellib.resources.TagMaps;
 import com.bartz24.varyingmachina.Helpers;
 import com.bartz24.varyingmachina.VaryingMachina;
 import com.bartz24.varyingmachina.item.ItemBlockMachine;
@@ -14,6 +7,15 @@ import com.bartz24.varyingmachina.machine.MachineVariant;
 import com.bartz24.varyingmachina.machine.ModMachines;
 import com.bartz24.varyingmachina.machine.ModVariants;
 import com.bartz24.varyingmachina.pixellib.PixelPlugin;
+import com.emosewapixel.pixellib.materialsystem.addition.BaseMaterials;
+import com.emosewapixel.pixellib.materialsystem.addition.BaseObjTypes;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialBlocks;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialItems;
+import com.emosewapixel.pixellib.materialsystem.lists.Materials;
+import com.emosewapixel.pixellib.materialsystem.main.IMaterialObject;
+import com.emosewapixel.pixellib.materialsystem.main.Material;
+import com.emosewapixel.pixellib.resources.RecipeMaker;
+import com.emosewapixel.pixellib.resources.TagMaps;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
@@ -27,77 +29,75 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bartz24.varyingmachina.pixellib.PixelPlugin.extract;
-
 public class ModRecipes {
     public static void setup() {
 
 
-        for (Material mat : Materials.getAll()) {
+        /*for (Material mat : Materials.getAll()) {
             if (extract.isMaterialCompatible(mat)) {
                 TagMaps.addItemToTag("ores/" + mat.getName(), MaterialItems.getItem(mat, extract));
             }
-        }
+        }*/
 
 
         for (Material mat : Materials.getAll()) {
-            for (Item item : MaterialItems.getAllItems()) {
-                if (item instanceof IMaterialItem /*&& ((IMaterialItem) item).getMaterial().equals(mat)*/)
-                    TagMaps.addMatItemToTag((IMaterialItem) item);
+            for (Item item : MaterialItems.getAll()) {
+                if (item instanceof IMaterialObject /*&& ((IMaterialItem) item).getMaterial().equals(mat)*/)
+                    TagMaps.addMatItemToTag((IMaterialObject) item);
             }
-            for (Block block : MaterialBlocks.getAllBlocks())
-                if (block instanceof IMaterialItem /*&& ((IMaterialItem) block).getMaterial().equals(mat)*/)
-                    TagMaps.addMatItemToTag((IMaterialItem) block);
+            for (Block block : MaterialBlocks.getAll())
+                if (block instanceof IMaterialObject /*&& ((IMaterialItem) block).getMaterial().equals(mat)*/)
+                    TagMaps.addMatItemToTag((IMaterialObject) block);
         }
 
         for (Material mat : Materials.getAll()) {
-            if (!mat.hasTag(MaterialRegistry.DISABLE_SIMPLE_PROCESSING)) {
-                if (mat.hasTag(MaterialRegistry.HAS_ORE)) {
-                    if (mat instanceof DustMaterial) {
-                        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "oretodust." + mat.getName()), new RecipeBase<>(new OutputItemChance(Helpers.createMaterialItemStack(mat, MaterialRegistry.DUST, 1), 1.0f, 3.0f)).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.ORE), 1)).setTime(40));
+            if (mat.getSimpleProcessing()) {
+                if (mat.getHasOre()) {
+                    if (mat.getHasDust()) {
+                        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "oretodust." + mat.getName()), new RecipeBase<>(new OutputItemChance(Helpers.createMaterialItemStack(mat, BaseObjTypes.DUST, 1), 1.0f, 3.0f)).addInputs(new InputItemTag(mat.getItemTag(BaseObjTypes.ORE), 1)).setTime(40));
                     }
-                    if (mat instanceof IngotMaterial) {
-                        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "oretoingot." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, MaterialRegistry.INGOT, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.ORE), 1)).setTime(60));
-                        RecipeMaker.addFurnaceRecipe(new ResourceLocation("varyingmachina", mat.getName() + "_ingot_smelt"), mat.getTag(MaterialRegistry.ORE), Helpers.createMaterialItemStack(mat, MaterialRegistry.INGOT, 1).getItem());
+                    if (mat.isIngotMaterial()) {
+                        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "oretoingot." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, BaseObjTypes.INGOT, 1))).addInputs(new InputItemTag(mat.getItemTag(BaseObjTypes.ORE), 1)).setTime(60));
+                        RecipeMaker.addFurnaceRecipe(new ResourceLocation("varyingmachina", mat.getName() + "_ingot_smelt"), mat.getHasOre(), Helpers.createMaterialItemStack(mat, BaseObjTypes.INGOT, 1).getItem());
                     }
-                    if (mat instanceof GemMaterial) {
-                        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "oretogem." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, MaterialRegistry.GEM, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.ORE), 1)).setTime(100));
-                        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "dusttogem." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, MaterialRegistry.GEM, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.DUST), 1)).setTime(1000).addReqs(new StatReq(ModMachines.Stats.pressure, (int) (Math.pow(1.5f, mat.getTier()) * 800), StatReq.StatReqComp.GREATEREQUAL)));
+                    if (mat.isGemMaterial()) {
+                        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "oretogem." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, BaseObjTypes.GEM, 1))).addInputs(new InputItemTag(mat.getItemTag(BaseObjTypes.ORE), 1)).setTime(100));
+                        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "dusttogem." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, BaseObjTypes.GEM, 1))).addInputs(new InputItemTag(mat.getItemTag(BaseObjTypes.DUST), 1)).setTime(1000).addReqs(new StatReq(ModMachines.Stats.pressure, (int) (Math.pow(1.5f, mat.getTier()) * 800), StatReq.StatReqComp.GREATEREQUAL)));
                     }
                 }
             }
 
-            if (PixelPlugin.gear.isMaterialCompatible(mat)) {
+/*            if (PixelPlugin.gear.isMaterialCompatible(mat)) {
                 if (mat instanceof IngotMaterial)
-                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "ingottogear." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.gear, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.INGOT), 4)).setTime(30));
+                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "ingottogear." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.gear, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.INGOT), 4)).setTime(30));
                 if (mat instanceof GemMaterial)
-                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "gemtogear." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.gear, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.GEM), 4)).setTime(60));
+                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "gemtogear." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.gear, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.GEM), 4)).setTime(60));
             }
             if (PixelPlugin.plate.isMaterialCompatible(mat)) {
                 if (mat instanceof IngotMaterial)
-                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "ingottoplate." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.plate, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.INGOT), 1)).setTime(10));
+                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "ingottoplate." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.plate, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.INGOT), 1)).setTime(10));
             }
             if (PixelPlugin.cable.isMaterialCompatible(mat)) {
                 if (mat instanceof IngotMaterial)
-                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "ingottocable." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.cable, 3))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.INGOT), 1)).setTime(10));
+                    ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "ingottocable." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.cable, 3))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.INGOT), 1)).setTime(10));
             }
 
-            if (MaterialRegistry.DUST.isMaterialCompatible(mat)) {
+            if (BaseObjTypes.DUST.isMaterialCompatible(mat)) {
                 if (mat instanceof IngotMaterial)
-                    ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "ingottodust." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, MaterialRegistry.DUST, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.INGOT), 1)).setTime(30));
+                    ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "ingottodust." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, BaseObjTypes.DUST, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.INGOT), 1)).setTime(30));
                 if (mat instanceof GemMaterial)
-                    ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "gemtodust." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, MaterialRegistry.DUST, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.GEM), 1)).setTime(40));
+                    ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "gemtodust." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, BaseObjTypes.DUST, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.GEM), 1)).setTime(40));
             }
 
             if (PixelPlugin.frozeningot.isMaterialCompatible(mat)) {
                 if (mat instanceof IngotMaterial)
-                    ModMachines.freezer.addRecipe(new ResourceLocation("varyingmachina", "ingottofrozeningot." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.frozeningot, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.INGOT), 1)).setTime(100 * (mat.getTier() + 1)).addReqs(new SpecialStatReq("maxCU", "freezer", (int) (2 * (mat.getTier() + 120) * Math.pow(1.4, mat.getTier())), SpecialStatReq.StatReqComp.GREATEREQUAL)));
+                    ModMachines.freezer.addRecipe(new ResourceLocation("varyingmachina", "ingottofrozeningot." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.frozeningot, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.INGOT), 1)).setTime(100 * (mat.getTier() + 1)).addReqs(new SpecialStatReq("maxCU", "freezer", (int) (2 * (mat.getTier() + 120) * Math.pow(1.4, mat.getTier())), SpecialStatReq.StatReqComp.GREATEREQUAL)));
             }
 
             if (PixelPlugin.frozengem.isMaterialCompatible(mat)) {
                 if (mat instanceof GemMaterial)
-                    ModMachines.freezer.addRecipe(new ResourceLocation("varyingmachina", "gemtofrozengem." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.frozengem, 1))).addInputs(new InputItemTag(mat.getTag(MaterialRegistry.GEM), 1)).setTime(150 * (mat.getTier() + 1)).addReqs(new SpecialStatReq("maxCU", "freezer", (int) (3.6 * (mat.getTier() + 120) * Math.pow(1.48, mat.getTier())), SpecialStatReq.StatReqComp.GREATEREQUAL)));
-            }
+                    ModMachines.freezer.addRecipe(new ResourceLocation("varyingmachina", "gemtofrozengem." + mat.getName()), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(mat, PixelPlugin.frozengem, 1))).addInputs(new InputItemTag(mat.getTag(BaseObjTypes.GEM), 1)).setTime(150 * (mat.getTier() + 1)).addReqs(new SpecialStatReq("maxCU", "freezer", (int) (3.6 * (mat.getTier() + 120) * Math.pow(1.48, mat.getTier())), SpecialStatReq.StatReqComp.GREATEREQUAL)));
+            }*/
         }
 
 
@@ -140,20 +140,20 @@ public class ModRecipes {
         }
 
         for (MachineVariant variant : ModVariants.types.values()) {
-            if (Materials.exists(variant.getName())) {
-                Item pick = MaterialItems.getItem(Materials.get(variant.getName()), PixelPlugin.pickaxe);
+            if (Materials.contains(variant.getName())) {
+                Item pick = MaterialItems.get(Materials.get(variant.getName()), PixelPlugin.pickaxe);
                 ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "pickaxe." + variant.getName()), new RecipeBase<>(new OutputItem(new ItemStack(pick))).addInputs(new InputItem(new ItemStack(Items.STICK, 2)), variant.getIngotItem().scale(3)).setTime(10));
 
-                Item axe = MaterialItems.getItem(Materials.get(variant.getName()), PixelPlugin.axe);
+                Item axe = MaterialItems.get(Materials.get(variant.getName()), PixelPlugin.axe);
                 ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "axe." + variant.getName()), new RecipeBase<>(new OutputItem(new ItemStack(axe))).addInputs(new InputItem(new ItemStack(Items.STICK, 2)), variant.getIngotItem().scale(3)).setTime(10));
 
-                Item shovel = MaterialItems.getItem(Materials.get(variant.getName()), PixelPlugin.shovel);
+                Item shovel = MaterialItems.get(Materials.get(variant.getName()), PixelPlugin.shovel);
                 ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "shovel." + variant.getName()), new RecipeBase<>(new OutputItem(new ItemStack(shovel))).addInputs(new InputItem(new ItemStack(Items.STICK, 2)), variant.getIngotItem()).setTime(10));
 
-                Item sword = MaterialItems.getItem(Materials.get(variant.getName()), PixelPlugin.sword);
+                Item sword = MaterialItems.get(Materials.get(variant.getName()), PixelPlugin.sword);
                 ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "sword." + variant.getName()), new RecipeBase<>(new OutputItem(new ItemStack(sword))).addInputs(new InputItem(new ItemStack(Items.STICK, 1)), variant.getIngotItem().scale(2)).setTime(10));
 
-                Item hoe = MaterialItems.getItem(Materials.get(variant.getName()), PixelPlugin.hoe);
+                Item hoe = MaterialItems.get(Materials.get(variant.getName()), PixelPlugin.hoe);
                 ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "hoe." + variant.getName()), new RecipeBase<>(new OutputItem(new ItemStack(hoe))).addInputs(new InputItem(new ItemStack(Items.STICK, 2)), variant.getIngotItem().scale(2)).setTime(10));
             }
 
@@ -167,27 +167,27 @@ public class ModRecipes {
         ModMachines.fabricator.addRecipe(new ResourceLocation("varyingmachina", "circuit3"), new RecipeBase<>(new OutputItem(new ItemStack(VaryingMachina.circuit3))).addInputs(new InputItem(new ItemStack(VaryingMachina.circuit2)), new InputItemTag(new ResourceLocation("forge", "plates/mythrilsteel"), 1), new InputItemTag(new ResourceLocation("forge", "dusts/diamond"), 2), new InputItemTag(new ResourceLocation("forge", "cables/gold"), 2)).setTime(180));
 
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "oretocoal"), new RecipeBase<>(new OutputItem(new ItemStack(Items.COAL))).addInputs(new InputItemTag(MaterialRegistry.COAL.getTag(MaterialRegistry.ORE), 1)).setTime(40));
+        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "oretocoal"), new RecipeBase<>(new OutputItem(new ItemStack(Items.COAL))).addInputs(new InputItemTag(BaseMaterials.COAL.getItemTag(BaseObjTypes.ORE), 1)).setTime(40));
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "steelalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.steel, MaterialRegistry.INGOT, 1))).addInputs(new InputItemTag(MaterialRegistry.IRON.getTag(MaterialRegistry.INGOT), 1), new InputItemTag(MaterialRegistry.COAL.getTag(MaterialRegistry.DUST), 1)).setTime(400).addReqs(new StatReq(ModMachines.Stats.hu, 1600, StatReq.StatReqComp.GREATEREQUAL)));
+        //ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "steelalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.steel, BaseObjTypes.INGOT, 1))).addInputs(new InputItemTag(BaseObjTypes.IRON.getTag(BaseObjTypes.INGOT), 1), new InputItemTag(BaseObjTypes.COAL.getTag(BaseObjTypes.DUST), 1)).setTime(400).addReqs(new StatReq(ModMachines.Stats.hu, 1600, StatReq.StatReqComp.GREATEREQUAL)));
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "bronzealloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.bronze, MaterialRegistry.INGOT, 4))).addInputs(new InputItemTag(PixelPlugin.copper.getTag(MaterialRegistry.INGOT), 3), new InputItemTag(PixelPlugin.tin.getTag(MaterialRegistry.INGOT), 1)).setTime(80).addReqs(new StatReq(ModMachines.Stats.hu, 230, StatReq.StatReqComp.GREATEREQUAL)));
+        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "bronzealloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.bronze, BaseObjTypes.INGOT, 4))).addInputs(new InputItemTag(PixelPlugin.copper.getItemTag(BaseObjTypes.INGOT), 3), new InputItemTag(PixelPlugin.tin.getItemTag(BaseObjTypes.INGOT), 1)).setTime(80).addReqs(new StatReq(ModMachines.Stats.hu, 230, StatReq.StatReqComp.GREATEREQUAL)));
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "electrumalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.electrum, MaterialRegistry.INGOT, 2))).addInputs(new InputItemTag(PixelPlugin.silver.getTag(MaterialRegistry.INGOT), 1), new InputItemTag(MaterialRegistry.GOLD.getTag(MaterialRegistry.INGOT), 1)).setTime(90).addReqs(new StatReq(ModMachines.Stats.hu, 730, StatReq.StatReqComp.GREATEREQUAL)));
+        //ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "electrumalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.electrum, BaseObjTypes.INGOT, 2))).addInputs(new InputItemTag(PixelPlugin.silver.getTag(BaseObjTypes.INGOT), 1), new InputItemTag(BaseObjTypes.GOLD.getTag(BaseObjTypes.INGOT), 1)).setTime(90).addReqs(new StatReq(ModMachines.Stats.hu, 730, StatReq.StatReqComp.GREATEREQUAL)));
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "ferrotinalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.ferrotin, MaterialRegistry.INGOT, 3))).addInputs(new InputItemTag(PixelPlugin.tin.getTag(MaterialRegistry.INGOT), 2), new InputItemTag(MaterialRegistry.IRON.getTag(MaterialRegistry.INGOT), 1)).setTime(100).addReqs(new StatReq(ModMachines.Stats.hu, 510, StatReq.StatReqComp.GREATEREQUAL)));
+        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "ferrotinalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.ferrotin, BaseObjTypes.INGOT, 3))).addInputs(new InputItemTag(PixelPlugin.tin.getItemTag(BaseObjTypes.INGOT), 2), new InputItemTag(BaseMaterials.IRON.getItemTag(BaseObjTypes.INGOT), 1)).setTime(100).addReqs(new StatReq(ModMachines.Stats.hu, 510, StatReq.StatReqComp.GREATEREQUAL)));
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "redcopperalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.redcopper, MaterialRegistry.INGOT, 1))).addInputs(new InputItemTag(PixelPlugin.copper.getTag(MaterialRegistry.INGOT), 1), new InputItemTag(MaterialRegistry.REDSTONE.getTag(MaterialRegistry.DUST), 3)).setTime(80).addReqs(new StatReq(ModMachines.Stats.hu, 910, StatReq.StatReqComp.GREATEREQUAL), new StatReq(ModMachines.Stats.speed, 2.0, StatReq.StatReqComp.GREATEREQUAL)));
+        //ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "redcopperalloy"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.redcopper, BaseObjTypes.INGOT, 1))).addInputs(new InputItemTag(PixelPlugin.copper.getTag(BaseObjTypes.INGOT), 1), new InputItemTag(BaseObjTypes.REDSTONE.getTag(BaseObjTypes.DUST), 3)).setTime(80).addReqs(new StatReq(ModMachines.Stats.hu, 910, StatReq.StatReqComp.GREATEREQUAL), new StatReq(ModMachines.Stats.speed, 2.0, StatReq.StatReqComp.GREATEREQUAL)));
 
-        ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "mythrilsteel"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.mythrilsteel, MaterialRegistry.INGOT, 2))).addInputs(new InputItemTag(PixelPlugin.mythril.getTag(MaterialRegistry.INGOT), 1), new InputItemTag(PixelPlugin.steel.getTag(MaterialRegistry.INGOT), 1)).setTime(500).addReqs(new StatReq(ModMachines.Stats.hu, 1880, StatReq.StatReqComp.GREATEREQUAL), new StatReq(ModMachines.Stats.pressure, 760, StatReq.StatReqComp.GREATEREQUAL)));
+        //ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "mythrilsteel"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.mythrilsteel, BaseObjTypes.INGOT, 2))).addInputs(new InputItemTag(PixelPlugin.mythril.getTag(BaseObjTypes.INGOT), 1), new InputItemTag(PixelPlugin.steel.getTag(BaseObjTypes.INGOT), 1)).setTime(500).addReqs(new StatReq(ModMachines.Stats.hu, 1880, StatReq.StatReqComp.GREATEREQUAL), new StatReq(ModMachines.Stats.pressure, 760, StatReq.StatReqComp.GREATEREQUAL)));
 
         ModMachines.smelter.addRecipe(new ResourceLocation("varyingmachina", "bread"), new RecipeBase<>(new OutputItem(new ItemStack(Items.BREAD))).addInputs(new InputItem(new ItemStack(Items.WHEAT))).setTime(40).addReqs(new StatReq(ModMachines.Stats.hu, 400, StatReq.StatReqComp.GREATEREQUAL)));
 
-        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "claydust"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.clay, MaterialRegistry.DUST, 1))).addInputs(new InputItem(new ItemStack(Items.CLAY_BALL))).setTime(10));
+        //ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "claydust"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(PixelPlugin.clay, BaseObjTypes.DUST, 1))).addInputs(new InputItem(new ItemStack(Items.CLAY_BALL))).setTime(10));
 
-        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "coaldust"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(MaterialRegistry.COAL, MaterialRegistry.DUST, 1))).addInputs(new InputItem(new ItemStack(Items.COAL))).setTime(10));
+        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "coaldust"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(BaseMaterials.COAL, BaseObjTypes.DUST, 1))).addInputs(new InputItem(new ItemStack(Items.COAL))).setTime(10));
 
-        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "flintdust"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(MaterialRegistry.FLINT, MaterialRegistry.DUST, 1))).addInputs(new InputItem(new ItemStack(Items.FLINT))).setTime(10));
+        ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "flintdust"), new RecipeBase<>(new OutputItem(Helpers.createMaterialItemStack(BaseMaterials.FLINT, BaseObjTypes.DUST, 1))).addInputs(new InputItem(new ItemStack(Items.FLINT))).setTime(10));
 
         ModMachines.grinder.addRecipe(new ResourceLocation("varyingmachina", "bonemeal"), new RecipeBase<>(new OutputItemChance(new ItemStack(Items.BONE_MEAL, 3), 1, 6)).addInputs(new InputItem(new ItemStack(Items.BONE))).setTime(12));
 

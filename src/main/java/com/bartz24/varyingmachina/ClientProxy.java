@@ -1,11 +1,11 @@
 package com.bartz24.varyingmachina;
 
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
-import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
-import com.EmosewaPixel.pixellib.proxy.IModProxy;
 import com.bartz24.varyingmachina.item.ItemBlockMachine;
 import com.bartz24.varyingmachina.machine.ModMachines;
 import com.bartz24.varyingmachina.tile.TileEntityMachine;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialItems;
+import com.emosewapixel.pixellib.materialsystem.main.IMaterialObject;
+import com.emosewapixel.pixellib.proxy.IModProxy;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -39,12 +39,12 @@ public class ClientProxy implements IModProxy {
     @Override
     public void enque(InterModEnqueueEvent interModEnqueueEvent) {
 
-        for (Item item : MaterialItems.getAllItems()) {
+        for (Item item : MaterialItems.getAll()) {
             if (item instanceof TieredItem)
                 Minecraft.getInstance().getItemColors().register((ItemStack stack, int index) -> {
                     Item sItem = stack.getItem();
-                    if (sItem instanceof IMaterialItem && index == 1)
-                        return ((IMaterialItem) sItem).getMaterial().getColor();
+                    if (sItem instanceof IMaterialObject && index == 1)
+                        return ((IMaterialObject) sItem).getMat().getColor();
                     return -1;
                 }, item);
         }

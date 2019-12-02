@@ -1,8 +1,9 @@
 package com.bartz24.varyingmachina.world;
 
-import com.EmosewaPixel.pixellib.materialsystem.MaterialRegistry;
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialBlocks;
 import com.bartz24.varyingmachina.pixellib.PixelPlugin;
+import com.emosewapixel.pixellib.materialsystem.addition.BaseMaterials;
+import com.emosewapixel.pixellib.materialsystem.addition.BaseObjTypes;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialBlocks;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -18,7 +19,7 @@ public class OreGeneration {
                     Feature.ORE,
                     new OreFeatureConfig(
                             OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                            MaterialBlocks.getBlock(PixelPlugin.copper, MaterialRegistry.ORE).getDefaultState(),
+                            MaterialBlocks.get(PixelPlugin.copper, BaseObjTypes.ORE).getDefaultState(),
                             12),
                     Placement.COUNT_RANGE,
                     new CountRangeConfig(
@@ -30,7 +31,7 @@ public class OreGeneration {
                     Feature.ORE,
                     new OreFeatureConfig(
                             OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                            MaterialBlocks.getBlock(PixelPlugin.tin, MaterialRegistry.ORE).getDefaultState(),
+                            MaterialBlocks.get(PixelPlugin.tin, BaseObjTypes.ORE).getDefaultState(),
                             9),
                     Placement.COUNT_RANGE,
                     new CountRangeConfig(
@@ -42,7 +43,7 @@ public class OreGeneration {
                     Feature.ORE,
                     new OreFeatureConfig(
                             OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                            MaterialBlocks.getBlock(PixelPlugin.silver, MaterialRegistry.ORE).getDefaultState(),
+                            MaterialBlocks.get(PixelPlugin.silver, BaseObjTypes.ORE).getDefaultState(),
                             10),
                     Placement.COUNT_RANGE,
                     new CountRangeConfig(
@@ -50,25 +51,25 @@ public class OreGeneration {
                             0,
                             0,
                             26)));
-            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(
+            /*biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(
                     Feature.ORE,
                     new OreFeatureConfig(
                             OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                            MaterialBlocks.getBlock(PixelPlugin.mythril, MaterialRegistry.ORE).getDefaultState(),
+                            MaterialBlocks.get(BaseMaterials.mythril, BaseObjTypes.ORE).getDefaultState(),
                             8),
                     Placement.COUNT_RANGE,
                     new CountRangeConfig(
                             5,
                             0,
                             0,
-                            18)));
+                            18)));*/
 
             if (biome.getCategory() == Biome.Category.PLAINS || biome.getCategory() == Biome.Category.SWAMP) {
                 biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.IRON, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.IRON, BaseObjTypes.ORE).getDefaultState(),
                                 240),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -83,7 +84,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.GOLD, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.GOLD, BaseObjTypes.ORE).getDefaultState(),
                                 180),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -98,7 +99,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(PixelPlugin.tin, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(PixelPlugin.tin, BaseObjTypes.ORE).getDefaultState(),
                                 220),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -113,7 +114,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(PixelPlugin.copper, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(PixelPlugin.copper, BaseObjTypes.ORE).getDefaultState(),
                                 260),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -128,7 +129,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.COAL, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.COAL, BaseObjTypes.ORE).getDefaultState(),
                                 280),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -143,7 +144,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.DIAMOND, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.DIAMOND, BaseObjTypes.ORE).getDefaultState(),
                                 90),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -158,7 +159,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.EMERALD, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.EMERALD, BaseObjTypes.ORE).getDefaultState(),
                                 75),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -168,12 +169,12 @@ public class OreGeneration {
                                 20)));
             }
 
-            if (biome.getCategory() == Biome.Category.TAIGA || biome.getCategory() == Biome.Category.DESERT) {
+            /*if (biome.getCategory() == Biome.Category.TAIGA || biome.getCategory() == Biome.Category.DESERT) {
                 biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(PixelPlugin.mythril, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(PixelPlugin.mythril, BaseObjTypes.ORE).getDefaultState(),
                                 80),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -181,14 +182,14 @@ public class OreGeneration {
                                 0,
                                 0,
                                 36)));
-            }
+            }*/
 
             if (biome.getCategory() == Biome.Category.BEACH || biome.getCategory() == Biome.Category.RIVER) {
                 biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.LAPIS, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.LAPIS, BaseObjTypes.ORE).getDefaultState(),
                                 110),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(
@@ -203,7 +204,7 @@ public class OreGeneration {
                         Feature.ORE,
                         new OreFeatureConfig(
                                 OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-                                MaterialBlocks.getBlock(MaterialRegistry.REDSTONE, MaterialRegistry.ORE).getDefaultState(),
+                                MaterialBlocks.get(BaseMaterials.REDSTONE, BaseObjTypes.ORE).getDefaultState(),
                                 160),
                         LargeCountRange.LARGE_COUNT_RANGE,
                         new CountRangeConfig(

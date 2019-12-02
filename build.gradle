@@ -1,16 +1,21 @@
 buildscript {
+    ext.kotlin_version = '1.3.60'
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true) {
+            exclude group: 'trove', module: 'trove'
+        }
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 
 version = '1.0'
@@ -25,7 +30,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: 'snapshot', version: '20191108-1.14.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     //accessTransformer = file('src/resources/main/META-INF/accesstransformer.cfg')
@@ -69,22 +74,43 @@ minecraft {
 
 repositories {
     maven {
-        // location of the maven that hosts JEI files
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
+        url 'https://minecraft.curseforge.com/api/maven/'
     }
+    maven {
+        url "https://maven.blamejared.com/"
+    }
+    mavenCentral()
+}
+configurations {
+    mod
 }
 
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.45'
-    compile fg.deobf("mezz.jei:jei-1.14.4:6.0.0.10")
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.87'
+    compile "kottle:Kottle:1.2.1"
+    mod "kottle:Kottle:1.2.1"
+    compile fg.deobf("mezz.jei:jei-1.14.4:6.0.0.25")
 
     compile fileTree(dir: 'lib', includes: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+task installMods(type: Copy, dependsOn: "deinstallMods") {
+    from { configurations.mod }
+    include "**/*.jar"
+    into file("run/mods")
+}
+
+task deinstallMods(type: Delete) {
+    delete fileTree(dir: "run/mods", include: "*.jar")
+}
+
+project.afterEvaluate {
+    project.tasks['prepareRuns'].dependsOn(project.tasks['installMods'])
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -121,5 +147,15 @@ publishing {
         maven {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }

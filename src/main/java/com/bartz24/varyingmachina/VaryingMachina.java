@@ -1,8 +1,5 @@
 package com.bartz24.varyingmachina;
 
-import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
-import com.EmosewaPixel.pixellib.proxy.IModProxy;
-import com.EmosewaPixel.pixellib.resources.JSONAdder;
 import com.bartz24.varyingmachina.block.BlockCasing;
 import com.bartz24.varyingmachina.block.BlockMachine;
 import com.bartz24.varyingmachina.container.ContainerMachine;
@@ -25,6 +22,9 @@ import com.bartz24.varyingmachina.render.TERMachine;
 import com.bartz24.varyingmachina.tile.TileEntityMachine;
 import com.bartz24.varyingmachina.world.LargeCountRange;
 import com.bartz24.varyingmachina.world.OreGeneration;
+import com.emosewapixel.pixellib.materialsystem.lists.Materials;
+import com.emosewapixel.pixellib.proxy.IModProxy;
+import com.emosewapixel.pixellib.resources.JSONAdder;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -222,7 +222,7 @@ public class VaryingMachina {
             e.getRegistry().register(circuit6 = new Item(new Item.Properties().group(main)).setRegistryName(new ResourceLocation("varyingmachina", "circuit6")));
 
             for (MachineVariant variant : ModVariants.types.values()) {
-                if (Materials.exists(variant.getName()) && variant != ModVariants.iron && variant != ModVariants.gold && variant != ModVariants.stone) {
+                if (Materials.contains(variant.getName()) && variant != ModVariants.iron && variant != ModVariants.gold && variant != ModVariants.stone) {
                     e.getRegistry().register(new VMItemPickaxe(Materials.get(variant.getName()), variant));
                     e.getRegistry().register(new VMItemShovel(Materials.get(variant.getName()), variant));
                     e.getRegistry().register(new VMItemAxe(Materials.get(variant.getName()), variant));
@@ -250,7 +250,7 @@ public class VaryingMachina {
             }
 
             for (MachineVariant variant : ModVariants.types.values()) {
-                if (Materials.exists(variant.getName()) && variant != ModVariants.iron && variant != ModVariants.gold && variant != ModVariants.stone) {
+                if (Materials.contains(variant.getName()) && variant != ModVariants.iron && variant != ModVariants.gold && variant != ModVariants.stone) {
                     addToolItemModel("pickaxe", variant.getName());
                     addToolItemModel("shovel", variant.getName());
                     addToolItemModel("axe", variant.getName());

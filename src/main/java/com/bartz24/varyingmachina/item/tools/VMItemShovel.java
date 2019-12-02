@@ -1,19 +1,19 @@
 package com.bartz24.varyingmachina.item.tools;
 
-import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
-import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
-import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
-import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.bartz24.varyingmachina.VaryingMachina;
 import com.bartz24.varyingmachina.item.IVariantItem;
 import com.bartz24.varyingmachina.machine.MachineVariant;
 import com.bartz24.varyingmachina.pixellib.PixelPlugin;
+import com.emosewapixel.pixellib.materialsystem.lists.MaterialItems;
+import com.emosewapixel.pixellib.materialsystem.main.IMaterialObject;
+import com.emosewapixel.pixellib.materialsystem.main.Material;
+import com.emosewapixel.pixellib.materialsystem.main.ObjectType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class VMItemShovel extends ShovelItem implements IVariantItem, IMaterialItem {
+public class VMItemShovel extends ShovelItem implements IVariantItem, IMaterialObject {
 
     private Material material;
     private MachineVariant variant;
@@ -32,7 +32,7 @@ public class VMItemShovel extends ShovelItem implements IVariantItem, IMaterialI
     }
 
     @Override
-    public Material getMaterial() {
+    public Material getMat() {
         return material;
     }
 
@@ -43,6 +43,6 @@ public class VMItemShovel extends ShovelItem implements IVariantItem, IMaterialI
 
     @Override
     public ITextComponent getDisplayName(ItemStack stack) {
-        return new TranslationTextComponent("itemtype.shovel", material.getTranslationKey());
+        return new TranslationTextComponent("itemtype.shovel", material.getName());
     }
 }

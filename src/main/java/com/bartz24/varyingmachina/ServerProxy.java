@@ -1,6 +1,6 @@
 package com.bartz24.varyingmachina;
 
-import com.EmosewaPixel.pixellib.proxy.IModProxy;
+import com.emosewapixel.pixellib.proxy.IModProxy;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
